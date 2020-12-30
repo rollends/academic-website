@@ -1,0 +1,19 @@
+\documentclass[preview,tikz,border={10 0}]{standalone}
+\usepackage{graphstyle}
+\begin{document}
+  \begin{tikzpicture}[node distance=1em]
+    \node (subreddit) [plain] {\texttt{/r/uwaterloo}};
+    \node (post_a) [post, below left=of subreddit] {Post A};
+    \node (post_b) [post, below right=of subreddit] {Post B};
+    \node (comment_1) [post,below left=of post_a] {Comment};
+    \node (comment_2) [post,below right=of post_a] {Comment};
+    \node (comment_3) [post,below = of post_b] {Comment};
+    \node (comment_4) [post,below=of comment_3] {Comment};
+    \node (comment_5) [post,below right=of comment_1] {Comment};
+
+    \path (post_a) edge[-] (comment_1)
+          (post_a) edge[-] (comment_2);
+    \path (post_b) edge[-] (comment_3) (comment_3) edge[-] (comment_4);
+    \path (comment_1) edge[-] (comment_5);
+  \end{tikzpicture}
+\end{document}

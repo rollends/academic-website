@@ -1,0 +1,19 @@
+\documentclass[preview,tikz,border={10 0}]{standalone}
+\usepackage{graphstyle}
+\begin{document}
+  \begin{tikzpicture}[node distance=1em]
+    \matrix[row sep=1em, column sep=3em] {
+                                    & \node (post_a) [post] {1};   &                               & & \node (user_a) [user] {A};\\
+      \node (comment_1) [post] {2}; &                              & \node (comment_2) [post] {3}; & & \node (user_b) [user] {B};\\
+                                    & \node (comment_5) [post] {4};&                               & & \node (user_c) [user] {C};\\
+    };
+
+    \path (post_a) edge[->] (comment_1)
+          (post_a) edge[->] (comment_2)
+          (comment_1) edge[->] (comment_5)
+          (post_a) edge[->] (user_a)
+          (comment_2) edge[->] (user_b)
+          (comment_1) edge[->] (user_c)
+          (comment_5) edge[->] (user_b);
+  \end{tikzpicture}
+\end{document}
