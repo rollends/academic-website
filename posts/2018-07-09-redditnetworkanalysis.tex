@@ -1,0 +1,77 @@
+---
+title :   "Applying Network Science to Reddit: Introduction"
+author:   "Rollen S. D'Souza"
+date  :   "2018-07-09"
+---
+Although my research tends to stay in the \(C^\infty\) domain, I decided this term to take a course on Networked and Distributed systems.
+The course takes a dip into applications of dynamical systems on nodes of a graph, which is a marked departure from my usual comfort zone.
+In this spirit, I decided to take an even farther trip away from my domain of control into the forest of network science for the purpose of my course project.
+I intend to track my thoughts in a series of blog posts;
+I hope they serve as an interesting read as well as a method for me to keep my head straight.
+The intention of my project is to use a variety of tools in network science to detect interesting users or posts on communities (subreddits) on Reddit.
+In particular, my current intentions are to:
+%
+\begin{itemize}
+ \item{Detect key posts, users or comments of a community in a given time period.}
+ \item{Detect sub-clusters within a community. Who talks to who?}
+\end{itemize}
+%
+The intent is to analyze the networks I am most familiar with.
+These are
+%
+\begin{itemize}
+  \item{\texttt{/r/science/}}
+  \item{\texttt{/r/uwaterloo/}}
+  \item{\texttt{/r/badmathematics/}}
+\end{itemize}
+%
+
+\paragraph{Has this been done before?}
+As far as I could find, not many have performed this exact of analysis in the literature.
+This is certainly due to the fact that it is a fairly specific question to ask that doesn't yield any high level abstract information about Reddit itself.
+In fact, it yields information that is specific to that community that is analyzed and may reveal information about how specific users interact in the community.
+Not a very good research question.
+But a great applied project.
+
+A number of authors in the literature were interested in how information propogates via Reddit into other information vessels~\cite{c1} or how these networks influence behaviour.
+This is naturally where the most interesting questions, but requires a careful study design that I did not clearly take time to do.
+\emph{Hey, I'm lazy.}
+Nonetheless, the excellent work by the authors of~\cite{c2} and~\cite{c3} inspires the graph structure I will use to analyze specific influencing behaviour of posts, comments and users.
+
+In terms of "community" analyses,~\cite{c4} and~\cite{c5} are quite typical of the type of analyses one sees.
+They are mostly interested either on how communities evolve or how information propogates through these communities.
+For what its worth, these are amazingly technical and make for a good read.
+Instead, I will apply the techniques of community detection to find groups of users that interact tightly with one another.
+There a variety of fancy techniques available here, but I will stick to a generalization of a very simple technique discussed in class.
+The structure of the posts following this will be to introduce the necessary mathematical formalisms and dive into the model and analysis.
+
+\paragraph{The Implementation}
+I have chosen to make my code and report public on my \href{https://github.com/rollends/red-prism}{Github profile}). The project name is Red Prism.
+\href{https://en.wikipedia.org/wiki/PRISM_(surveillance_program)}{The irony of this name is not to be left unobserved}.
+Don't worry, no specific information about specific users will be placed in the report.
+
+The scripts will be written in Python 3.
+It will use a Redis (key-value database) store to temporarily store information on posts, comments and user names.
+It is at this point I want to make a great, big shout-out to `/u/Stuck\_In\_The\_Matrix` for putting together archives of Reddit data and uploading it to~\cite{c6}.
+This is incredibly valuable and I plan to make a donation to the server upon completion of this project.
+The scripts rely on the whole archives, filtering through them and storing the filtered data into the Redis store.
+This is mostly to prevent unnecessary network traffic during analysis;
+that is, to allow me to easily transform data into any format I like without having to redownload anything.
+
+\paragraph{Conclusion}
+This is a fairly small project in terms of the level of algorithms and mathematical tools involved.
+However I hope even with the limited technical tools I am trained with, I hope to find some interesting information about the communities I care about!
+And maybe you'll learn something cool too!
+
+\paragraph{References}
+\bibitem{c1}: Haralabopoulos et al., ``Lifespan and propagation of information in Online Social Networks: A case study based on Reddit,'' \emph{Journal of Network and Computer Applications}, doi: \href{https://doi.org/10.1016/j.jnca.2015.06.006}{10.1016/j.jnca.2015.06.006}.
+
+\bibitem{c2}: Tsantarliotis P. et al., ``Defining and predicting troll vulnerability in online social media,'' \emph{Social Network Analysis and Mining}, vol. 7, no. 26, December 2017, doi: \href{https://doi.org/10.1007/s13278-017-0445-2}{10.1007/s13278-017-0445-2}.
+
+\bibitem{c3}: Medvedev A. et al., ``Modelling structure and predicting dynamics of discussion threads in online boards,'' arxiv: \href{https://arxiv.org/pdf/1801.10082.pdf}{1801.10082}.
+
+\bibitem{c4}: Zannettou S. et al., "On the Origins of Memes by Means of Fringe Web Communities," arxiv: [1805.12512](https://arxiv.org/pdf/1805.12512.pdf).
+
+\bibitem{c5}: Kumar S. et al., ``Community Interaction and Conflict on the Web,'' arxiv: \href{https://arxiv.org/pdf/1803.03697.pdf}{1803.03697}.
+
+\bibitem{c6}: \href{https://files.pushshift.io/reddit/}{Reddit PushShift Archive}

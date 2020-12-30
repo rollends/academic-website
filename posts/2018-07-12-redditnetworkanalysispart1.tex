@@ -1,0 +1,75 @@
+---
+title :   "Applying Network Science to Reddit: Key Content Detection (Part 1)"
+author:   "Rollen S. D'Souza"
+date  :   "2018-07-12"
+---
+My first investigation involves attempting to detect key content or users in a given community.
+I begin by establishing the model and various mathematical preliminaries.
+
+\paragraph{Mathematical Preliminaries}
+
+\paragraph{Basic Definitions}
+Networks can be modelled by nodes that are connected together by edges.
+The mathematics of \emph{Algebraic Graph Theory} gives us the tools we need for this section.
+In this case, we introduce the language used for directed graphs.
+
+\textbf{Definition:} A graph \(G = (V, E)\) is a pair consisting of a set of nodes \(V\) and a set of edges \(E\) that describe which nodes lead to which others.
+Specifically, if there is an edge from node \(n_1 \in V\) to \(n_2 \in V\) then \((n_1, n_2) \in E.\)
+
+Another representation of the edges, which is vastly more useful, is the \emph{adjacency matrix}.
+The adjacency matrix not only permits us to describe the links between one node to another, but also allows us to weight each one with any real number.
+
+\textbf{Definition:} Say a graph \(G=(V,E)\) has \(n\) nodes.
+An adjacency matrix \(A\in \mathbb{R}^{n\times n}\) for graph \(G\) is such that
+\[
+  (A)_{i,j}
+    =
+      \begin{cases}
+        w_{i,j}  & \text{if } (i,j) \in E \\
+        0 & \text{otherwise}
+      \end{cases},
+\]
+where \(w_{i,j} \neq 0.\)
+We take, for simplicity's sake, that \(w_{i,j} > 0.\)
+That is, the matrix \(A\) is non-negative.
+
+The adjacency matrix provides a lens into the nature of the underlying graph it represents.
+For example, if you would like to know whether a path of length 2 exists from node 3 to node 5, you simply could evaluate \((A^2)\_{3,5}\) and see if it is non-zero.
+How can we see this? Observe,
+\[(A^2)_{3,5} = \sum_{l = 1}^n A_{3,l} A_{l, 5}.\]
+Assuming all elements of \(A\) are non-negative, we can conclude that \(A^2\) is non-zero at position \((3,5)\) only if node 3 leads to some node \(l\) --- the intermediate node --- which then directly leads to node 5.
+In other words, a path of length 2 from 3 to 5.
+
+This can be easily generalized to existence of paths of any length by summing all the powers of \(A.\)
+Note how the following proposition leverages the fact that we assumed $A$ is non-negative.
+
+\textbf{Proposition:} Let \(M_k(A) = \sum_{l=1}^k A^l.\) A path from node \(i\) to node \(j\) exists if and only if there exists a \(k \in \mathbb{N}\) so that \((M_k(A))_{i,j} > 0.\)
+
+\paragraph{Centrality Measures}
+Centrality measures are a way to assess the degree to which any given node is "central" to the graph.
+The definition of ``central'' here depends on the measure used.
+They all make an attempt to capture the idea of a node that is highly connected to tons of other nodes in the graph;
+the social butterfly of the graph, if you will.
+The centrality measure I choose to use is the Katz Centrality measure.
+
+\textbf{Definition:} Let \(A\) be an adjacency matrix for some graph.
+Let \(\alpha > 0\) be a sufficiently small constant.
+The Katz Centrality measure for node \(i\) is,
+\[
+  c_i = \sum_{k=1}^{\infty}{ \sum_{j=1}^{n}{ \alpha^k (A^k)_{j,i} } }
+\]
+
+This definition doesn't have any obvious relationship to centrality.
+To make the connection clear, let us define another matrix \(\bar{A} = \alpha A.\) and rearrange the measure to get,
+\[
+  c_i = \sum_{j=1}^{n}{ \left( \sum_{k=1}^{\infty} \bar{A}^k \right)_{j,i} } = \sum_{j=1}^{n}{ \left( \lim_{k\to \infty} M_k(\bar{A}) \right)_{j,i}}
+\]
+Side-stepping the question of whether the limit converges (and for what choice of \(\alpha\) it does so), this formulation provides an intuition for the measure.
+Recalling that \(M_k\) is non-zero at elements that indicate path existence, this measure is attempting to sum up the strength of all possible paths to the node \(i\) --- note that it attenuates the longer paths by the constant factor \(\alpha.\)
+
+Of course computing this measure requires evaluating a limit, which isn't ideal.
+The next proposition states an established technique used to calculate the measure.
+
+\textbf{Proposition:} The iteration, \(c(k+1) = \alpha A^T(1 + c(k))\) converges to the Katz Centrality measure vector.
+
+We are now ready to dive into the actual model.

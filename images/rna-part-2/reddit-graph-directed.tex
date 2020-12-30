@@ -1,0 +1,14 @@
+\documentclass[preview,tikz,border={10 0}]{standalone}
+\usepackage{graphstyle}
+\begin{document}
+  \begin{tikzpicture}[node distance=0.5em]
+    \node (post_a) [post] {1};
+    \node (comment_1) [post,below left=of post_a] {2};
+    \node (comment_2) [post,below right=of post_a] {3};
+    \node (comment_5) [post,below right=of comment_1] {4};
+
+    \path (post_a) edge[->] (comment_1)
+          (post_a) edge[->] (comment_2)
+          (comment_1) edge[->] (comment_5);
+  \end{tikzpicture}
+\end{document}
