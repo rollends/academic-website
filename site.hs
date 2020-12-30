@@ -53,7 +53,7 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" archiveCtx
                 >>= relativizeUrls
 
-    match "index.tex" $ do
+    match "index.html" $ do
       route   $ setExtension "html"
       compile $ do
         posts <- recentFirst =<< loadAll "posts/*"
@@ -61,7 +61,6 @@ main = hakyll $ do
 
         getResourceBody
           >>= applyAsTemplate archiveCtx
-          >>= renderPandoc
           >>= loadAndApplyTemplate "templates/default.html" archiveCtx
           >>= relativizeUrls
 

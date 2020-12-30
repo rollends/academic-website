@@ -586,8 +586,12 @@ progress {
   height: auto;
 }
 
+/* ADDITION: FIGURE TAG IS USED NOW */
 .figure {
   display: inline-block;
+  /* ADDITION: FIGURE IMAGES GET A BORDER */
+  border: 0.25rem solid var(--bs-cyan);
+  border-radius: 1rem;
 }
 
 .figure-img {
