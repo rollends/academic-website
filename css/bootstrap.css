@@ -10753,4 +10753,16 @@ figure img {
   object-fit: contain;
 }
 
+blockquote {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 0.25rem solid var(--bs-secondary);
+  border-radius: 0.25rem;
+  padding: 1rem 1rem;
+}
 /*# sourceMappingURL=bootstrap.css.map */
