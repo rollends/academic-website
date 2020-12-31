@@ -10733,4 +10733,24 @@ textarea.form-control-lg {
   }
 }
 
+/* ROLLEN'S ADDITIONS */
+figure {
+  max-width: 100%;
+  padding: 0.5rem;
+  text-align: center;
+  border: 0.25rem solid var(--bs-primary);
+  border-radius: 0.25rem;
+}
+
+figcaption {
+  max-width: 100%;
+  font-size: 0.75rem;
+  text-align: justify;
+}
+
+figure img {
+  max-width: 100%;
+  object-fit: contain;
+}
+
 /*# sourceMappingURL=bootstrap.css.map */
