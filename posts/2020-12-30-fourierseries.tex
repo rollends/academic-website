@@ -1,0 +1,112 @@
+---
+title :   "The Linear Algebra behind the Truncated Fourier Series"
+author:   "Rollen S. D'Souza"
+date  :   "2020-12-30"
+---
+Most, if not all, engineering and applied mathematics students are familiar with the Fourier series.
+Here I will give a slightly different treatment of the Fourier series that I find is interesting.
+It will have a similar flavour to that often seen in more formal mathematics classes that have covered it.
+I will assume a fair knowledge of abstract linear algebra.
+
+Define the set of functions
+\[
+  L_2([-\pi, \pi])
+    =
+      \left\{
+        f: [-\pi, \pi] \to \mathbb{C}
+        \;\middle|\;
+        \int_{-\pi}^{\pi} f(t) \overline{f(t)} ~dt < \infty
+      \right\},
+\]
+where we'll take \(f\) to also be piecewise continuous.
+Functions in \(L_2([-\pi, \pi])\) are said to be \textbf{square integrable} on \([-\pi, \pi].\)
+In engineering terminology, these are finite energy signals.
+This space is an infinite-dimensional vector space over the field \(\mathbb{C}\) but it can be endowed with even stronger structure than this.
+Given any two functions \(f,\) \(g\in L_2([-\pi, \pi])\) define their inner product by
+\[
+  \langle f, g \rangle_{L_2} = \int_{-\pi}^{\pi} f(t) \overline{g(t)}~dt.
+\]
+To avoid confusion, inner products over the space \(L_2([-\pi, \pi])\) will always be subscripted with \(L_2.\)
+Observe that since all functions are square integrable we have that the induced norm
+\[
+  \|f\| = \sqrt{\langle f, f \rangle}
+\]
+is well-defined.
+
+Now let \(\mathbb{C}^n\) have the usual inner product space structure.
+Define the linear map \(\mathcal{L}: \mathbb{C}^n \to L_2([-\pi, \pi])\) by
+\[
+  \mathcal{L}(x)
+    =
+      x^1 + x^2 e^{i 2 \pi t} + \cdots + x^{n} e^{i 2 \pi (n-1) t},
+\]
+where \(x = (x^1, \ldots, x^n).\)
+To this map, there exists an adjoint map \(\mathcal{L}^*: L_2([-\pi, \pi]) \to \mathbb{C}^n\) that satisfies, for all \(x \in \mathbb{C}^n\) and \(f \in L_2([-\pi, \pi]),\)
+\[
+  \langle \mathcal{L}(x), f \rangle_{L_2}
+  =
+  \langle x, \mathcal{L}^*(f) \rangle.
+\]
+Since the domain of \(\mathcal{L}\) is finite-dimensional it has a basis and so we can write both \(x\) and \(\mathcal{L}^*(f)\) in terms of this basis to find a formula for \(\mathcal{L}^*(f).\)
+Using the standard orthonormal basis \(e_1, \ldots, e_n\) for \(\mathbb{C}^n,\)
+\[
+  \mathcal{L}^*(f)
+    =
+      \frac{\langle 1, f \rangle_{L_2}}{\langle 1, 1\rangle_{L_2}}
+      e_1
+      +
+      \frac{\langle e^{i 2 \pi t}, f \rangle_{L_2}}{\langle e^{i 2 \pi t}, e^{i 2 \pi t}\rangle_{L_2}}
+      e_2
+      +
+      \cdots
+      +
+      \frac{\langle e^{i 2 \pi (n-1) t}, f \rangle_{L_2}}{\langle e^{i 2 \pi(n-1)t}, e^{i 2 \pi(n-1) t}\rangle_{L_2}}
+      e_n.
+\]
+Consider the following optimization problem.
+%
+\begin{quote}
+  Given \(f \in L_2([-\pi, \pi]),\) what is the \(x^* \in \mathbb{C}^n\) that solves
+  \[
+    \min_{x \in \mathbb{C}^n} \langle L x - f, L x - f \rangle_{L_2}.
+  \]
+\end{quote}
+%
+This question asks to find the coefficients \(x\) to our complex exponentials that best approximates the function \(f \in L_2([-\pi, \pi]).\)
+It turns out we can find an explicit expression for \(x^*.\)
+Really, this problem is just a linear least squares problem on a finite-dimensional vector space.
+Most students will have encountered this problem in a linear algebra class.
+In some settings, the solution is directly computed by first computing the \href{https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse}{Moore-Penrose pseudoinverse} of the matrix characterizing the problem.
+We will take this approach.
+
+Consider the map \(\mathcal{L}^* \circ \mathcal{L}: \mathbb{C}^n \to \mathbb{C}^n.\)
+This is now a linear map between finite-dimensional vector spaces.
+It is a very special kind of linear map.
+Let \(x \in \mathbb{C}^n\) be arbitrary and consider the inner product
+\[
+  \langle x, (\mathcal{L}^* \circ \mathcal{L})(x) \rangle.
+\]
+Using the property of the adjoint the above expression equals
+\[
+  \langle \mathcal{L}(x), \mathcal{L}(x) \rangle.
+\]
+This is positive if, and only if, \(\mathcal{L}(x)\) is equal to zero function.
+The only way for \(\mathcal{L}(x)\) to be the zero function is if \(x = 0\) since \(\mathcal{L}\) is injective by construction.
+So it follows that \(\langle x, (\mathcal{L}^* \circ \mathcal{L})(x) \rangle > 0\) if, and only if, \(x \neq 0.\)
+This is the definition of a map being positive definite so we conclude that \(\mathcal{L}^* \circ \mathcal{L}\) is positive definite.
+Positive definite matrices are invertible.
+We are now justified in defining
+\[
+  x^* = \left(\mathcal{L}^* \circ \mathcal{L}\right)^{-1}(\mathcal{L}^*(f)).
+\]
+Compare with your sources to see that \((\mathcal{L}^* \circ \mathcal{L})^{-1} \circ \mathcal{L}^*\) is really just the (left) pseudoinverse.
+I claim that this \(x^*\) is the solution.
+
+Skirting the proof here as it is a matter of second year linear algebra, what really is the value of this perspective?
+For one, observe that nowhere did we have to use the fact that the complex exponentials form an orthogonal basis.
+This is often a fact explicitly leveraged to demonstrate the formulas for the coefficients.
+Two, note that there is no reason to rely on the standard inner product on \(\mathbb{C}^n.\)
+Suppose we cared more about precisely estimating the lower frequencies than higher frequencies.
+We could define an alternative inner product on \(\mathbb{C}^n\) that then determines a different map \(\mathcal{L}^*\) and possibly a different \(x^*\)!
+
+Let us explore precisely this case with an example.
