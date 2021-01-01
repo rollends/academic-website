@@ -1,7 +1,7 @@
 ---
 title :   "The Linear Algebra behind a Truncated Series Approximation"
 author:   "Rollen S. D'Souza"
-date  :   "2020-12-30"
+date  :   "2020-12-31"
 ---
 Most, if not all, engineering and applied mathematics students are familiar with the Fourier series.
 Here I will give a slightly different treatment of the series.
@@ -33,7 +33,7 @@ is well-defined.
 %
 Now let \(\mathbb{R}^{2n+1}\) have the usual inner product space structure.
 The space \(\mathbb{R}^{2n+1}\) has a well-known orthonormal basis \(e_1, \ldots, e_{2n+1}.\)
-Define a linear map \(M\) using this basis that satisfies
+Define a linear map \(M\) that satisfies
 \[
   M(e_1) = 1
 \]
@@ -86,9 +86,9 @@ Consider the following optimization problem.
 %
 This question asks to find the coefficients \(x\) of our trignometric functions that best approximates the function \(f \in L_2([-1, 1])\) in terms of the distance function \(\|\cdot\|_{L_2}.\)
 We can find an explicit expression for \(x^*.\)
-This problem is just a linear least squares problem on a finite-dimensional vector space.
+This problem is a linear least squares problem on a finite-dimensional vector space.
 Most students will have encountered this problem in a linear algebra class.
-The solution is directly computed by first computing the \href{https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse}{Moore-Penrose pseudoinverse} of the matrix characterizing the problem.
+The solution is computed by computing \href{https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse}{Moore-Penrose pseudoinverse} of the matrix characterizing the problem.
 We will take this approach.
 
 Consider the linear map \(M^* \circ M: \mathbb{R}^{2n+1} \to \mathbb{R}^{2n+1}.\)
