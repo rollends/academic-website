@@ -1,83 +1,95 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import          Data.Monoid (mappend)
-import          Hakyll
-import          Hakyll.Core.Compiler.Internal (compilerThrow)
-import          Data.Text (pack, unpack, append, empty, singleton)
-import          Text.Pandoc
-import          Data.Map.Strict (insert, union)
-import          Text.CSL.Pandoc (processCites')
+import Hakyll
+import Data.Map.Strict (insert)
+import Data.Text (pack)
+import Text.CSL.Pandoc (processCites')
+import Text.Pandoc
+--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
+--- ENTRY POINT FOR SITE COMPILATION
+---
 main :: IO ()
 main = hakyll $ do
-    match "images/**" $ do
-        route   idRoute
-        compile copyFileCompiler
+  --- BEGIN Post Compilation
+  ---
 
-    match "scripts/*" $ do
-        route   idRoute
-        compile copyFileCompiler
+  --- When the Post has a Bibliography, have to do some extra work.
+  matchMetadata "posts/*.tex" laTeXPostHasReferences $ do
+    route $ setExtension "html"
+    compile laTeXPostWithBibCompiler
 
-    match "css/*" $ do
-        route   idRoute
-        compile compressCssCompiler
+  -- Otherwise it's quite simple.
+  matchMetadata "posts/*.tex" (not . laTeXPostHasReferences) $ do
+    route $ setExtension "html"
+    compile laTeXPostCompiler
 
-    match (fromList ["about.tex", "contactme.md"]) $ do
-        route   $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
+  ---
+  --- END Post Compilation
 
-    match "posts/*.markdown" $ do
-        route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    postCtx
-            >>= loadAndApplyTemplate "templates/default.html" postCtx
-            >>= relativizeUrls
+  --- BEGIN Static Content
+  ---   these are simply copied over (CSS is compressed)
+  ---
+  match "images/**" $ do
+      route   idRoute
+      compile copyFileCompiler
 
-    matchMetadata "posts/*.tex" laTeXPostHasReferences $ do
-      route $ setExtension "html"
-      compile laTeXPostWithBibCompiler
+  match "scripts/*" $ do
+      route   idRoute
+      compile copyFileCompiler
 
-    matchMetadata "posts/*.tex" (not . laTeXPostHasReferences) $ do
-      route $ setExtension "html"
-      compile laTeXPostCompiler
+  match "css/*" $ do
+      route   idRoute
+      compile compressCssCompiler
+  ---
+  --- END Static Content
 
-    create ["archive.html"] $ do
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archive"             `mappend`
-                    defaultContext
+  --- BEGIN One off Files
+  ---
+  match (fromList ["about.tex", "contactme.md"]) $ do
+    route   $ setExtension "html"
+    compile $ pandocCompiler
+      >>= loadAndApplyTemplate "templates/default.html" defaultContext
+      >>= relativizeUrls
 
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-                >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-                >>= relativizeUrls
+  create ["archive.html"] $ do
+    route idRoute
+    compile $ do
+      posts <- recentFirst =<< loadAll "posts/*"
+      let
+        archiveCtx =
+          listField "posts" postCtx (return posts) <>
+          constField "title" "Archive"             <>
+          defaultContext
 
-    match "index.html" $ do
-      route   $ setExtension "html"
-      compile $ do
-        posts <- recentFirst =<< loadAll "posts/*"
-        let archiveCtx = listField "posts" postCtx (return posts) `mappend` defaultContext
+      makeItem ""
+        >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
+        >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+        >>= relativizeUrls
 
-        getResourceBody
-          >>= applyAsTemplate archiveCtx
-          >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-          >>= relativizeUrls
+  match "index.html" $ do
+    route   $ setExtension "html"
+    compile $ do
+      posts <- recentFirst =<< loadAll "posts/*"
+      let archiveCtx = listField "posts" postCtx (return posts) <> defaultContext
 
-    match "templates/*" $ compile templateBodyCompiler
+      getResourceBody
+        >>= applyAsTemplate archiveCtx
+        >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+        >>= relativizeUrls
+  ---
+  --- END One off Files
+  
+  --- Template Compilation
+  match "templates/*" $ compile templateBodyCompiler
 
 
 --------------------------------------------------------------------------------
 postCtx :: Context String
 postCtx =
-    dateField "date" "%B %e, %Y" `mappend`
+    dateField "date" "%B %e, %Y" <>
     defaultContext
-
 --------------------------------------------------------------------------------
 loadLaTeXPostBibliography :: String -> Item Pandoc -> Compiler (IO Pandoc)
 loadLaTeXPostBibliography filepath (Item id (Pandoc meta docBody)) =
@@ -96,95 +108,58 @@ laTeXPostHasReferences meta =
     Just _    -> True   -- Bibliography referenced.
 
 laTeXPostWithBibCompiler :: Compiler (Item String)
-laTeXPostWithBibCompiler =
-  let
-    laTeXWriterOptions =
-      WriterOptions{
-        writerTemplate         = writerTemplate defaultHakyllWriterOptions
-      , writerVariables        = writerVariables defaultHakyllWriterOptions
-      , writerTabStop          = writerTabStop defaultHakyllWriterOptions
-      , writerTableOfContents  = writerTableOfContents defaultHakyllWriterOptions
-      , writerIncremental      = writerIncremental defaultHakyllWriterOptions
-      , writerHTMLMathMethod   = MathJax ""
-      , writerNumberSections   = writerNumberSections defaultHakyllWriterOptions
-      , writerNumberOffset     = writerNumberOffset defaultHakyllWriterOptions
-      , writerSectionDivs      = writerSectionDivs defaultHakyllWriterOptions
-      , writerExtensions       = writerExtensions defaultHakyllWriterOptions
-      , writerReferenceLinks   = writerReferenceLinks defaultHakyllWriterOptions
-      , writerDpi              = writerDpi defaultHakyllWriterOptions
-      , writerWrapText         = writerWrapText defaultHakyllWriterOptions
-      , writerColumns          = writerColumns defaultHakyllWriterOptions
-      , writerEmailObfuscation = writerEmailObfuscation defaultHakyllWriterOptions
-      , writerIdentifierPrefix = writerIdentifierPrefix defaultHakyllWriterOptions
-      , writerCiteMethod       = Citeproc
-      , writerHtmlQTags        = writerHtmlQTags defaultHakyllWriterOptions
-      , writerSlideLevel       = writerSlideLevel defaultHakyllWriterOptions
-      , writerTopLevelDivision = writerTopLevelDivision defaultHakyllWriterOptions
-      , writerListings         = writerListings defaultHakyllWriterOptions
-      , writerHighlightStyle   = writerHighlightStyle defaultHakyllWriterOptions
-      , writerSetextHeaders    = writerSetextHeaders defaultHakyllWriterOptions
-      , writerEpubSubdirectory = writerEpubSubdirectory defaultHakyllWriterOptions
-      , writerEpubMetadata     = writerEpubMetadata defaultHakyllWriterOptions
-      , writerEpubFonts        = writerEpubFonts defaultHakyllWriterOptions
-      , writerEpubChapterLevel = writerEpubChapterLevel defaultHakyllWriterOptions
-      , writerTOCDepth         = writerTOCDepth defaultHakyllWriterOptions
-      , writerReferenceDoc     = writerReferenceDoc defaultHakyllWriterOptions
-      , writerReferenceLocation= writerReferenceLocation defaultHakyllWriterOptions
-      , writerSyntaxMap        = writerSyntaxMap defaultHakyllWriterOptions
-      , writerPreferAscii      = writerPreferAscii defaultHakyllWriterOptions
-      }
-  in do
-    bibfilepath <- getUnderlying >>= (\x -> getMetadataField' x "bib")
-    identifier <- getUnderlying
-    getResourceBody
-      >>= readPandoc
-      >>= loadLaTeXPostBibliography bibfilepath
-      >>= unsafeCompiler
-      >>= \document -> return (writePandocWith laTeXWriterOptions (Item identifier document))
-      >>= loadAndApplyTemplate "templates/post.html" postCtx 
-      >>= loadAndApplyTemplate "templates/default.html" postCtx
-      >>= relativizeUrls
+laTeXPostWithBibCompiler = do
+  bibfilepath <- getUnderlying >>= (\x -> getMetadataField' x "bib")
+  identifier <- getUnderlying
+  getResourceBody
+    >>= readPandoc
+    >>= loadLaTeXPostBibliography bibfilepath
+    >>= unsafeCompiler
+    >>= \document -> return (writePandocWith laTeXWriterOptions (Item identifier document))
+    >>= loadAndApplyTemplate "templates/post.html" postCtx 
+    >>= loadAndApplyTemplate "templates/default.html" postCtx
+    >>= relativizeUrls
 
 laTeXPostCompiler :: Compiler (Item String)
 laTeXPostCompiler =
-  let
-    laTeXWriterOptions =
-      WriterOptions{
-        writerTemplate         = writerTemplate defaultHakyllWriterOptions
-      , writerVariables        = writerVariables defaultHakyllWriterOptions
-      , writerTabStop          = writerTabStop defaultHakyllWriterOptions
-      , writerTableOfContents  = writerTableOfContents defaultHakyllWriterOptions
-      , writerIncremental      = writerIncremental defaultHakyllWriterOptions
-      , writerHTMLMathMethod   = MathJax ""
-      , writerNumberSections   = writerNumberSections defaultHakyllWriterOptions
-      , writerNumberOffset     = writerNumberOffset defaultHakyllWriterOptions
-      , writerSectionDivs      = writerSectionDivs defaultHakyllWriterOptions
-      , writerExtensions       = writerExtensions defaultHakyllWriterOptions
-      , writerReferenceLinks   = writerReferenceLinks defaultHakyllWriterOptions
-      , writerDpi              = writerDpi defaultHakyllWriterOptions
-      , writerWrapText         = writerWrapText defaultHakyllWriterOptions
-      , writerColumns          = writerColumns defaultHakyllWriterOptions
-      , writerEmailObfuscation = writerEmailObfuscation defaultHakyllWriterOptions
-      , writerIdentifierPrefix = writerIdentifierPrefix defaultHakyllWriterOptions
-      , writerCiteMethod       = Citeproc
-      , writerHtmlQTags        = writerHtmlQTags defaultHakyllWriterOptions
-      , writerSlideLevel       = writerSlideLevel defaultHakyllWriterOptions
-      , writerTopLevelDivision = writerTopLevelDivision defaultHakyllWriterOptions
-      , writerListings         = writerListings defaultHakyllWriterOptions
-      , writerHighlightStyle   = writerHighlightStyle defaultHakyllWriterOptions
-      , writerSetextHeaders    = writerSetextHeaders defaultHakyllWriterOptions
-      , writerEpubSubdirectory = writerEpubSubdirectory defaultHakyllWriterOptions
-      , writerEpubMetadata     = writerEpubMetadata defaultHakyllWriterOptions
-      , writerEpubFonts        = writerEpubFonts defaultHakyllWriterOptions
-      , writerEpubChapterLevel = writerEpubChapterLevel defaultHakyllWriterOptions
-      , writerTOCDepth         = writerTOCDepth defaultHakyllWriterOptions
-      , writerReferenceDoc     = writerReferenceDoc defaultHakyllWriterOptions
-      , writerReferenceLocation= writerReferenceLocation defaultHakyllWriterOptions
-      , writerSyntaxMap        = writerSyntaxMap defaultHakyllWriterOptions
-      , writerPreferAscii      = writerPreferAscii defaultHakyllWriterOptions
-      }
-  in do
-    pandocCompilerWith defaultHakyllReaderOptions laTeXWriterOptions
-      >>= loadAndApplyTemplate "templates/post.html" postCtx
-      >>= loadAndApplyTemplate "templates/default.html" postCtx
-      >>= relativizeUrls
+  pandocCompilerWith defaultHakyllReaderOptions laTeXWriterOptions
+    >>= loadAndApplyTemplate "templates/post.html" postCtx
+    >>= loadAndApplyTemplate "templates/default.html" postCtx
+    >>= relativizeUrls
+
+--- The Messy Pandoc Writer Options for reading LaTeX Docs.
+laTeXWriterOptions =
+  WriterOptions{
+    writerTemplate         = writerTemplate defaultHakyllWriterOptions
+  , writerVariables        = writerVariables defaultHakyllWriterOptions
+  , writerTabStop          = writerTabStop defaultHakyllWriterOptions
+  , writerTableOfContents  = writerTableOfContents defaultHakyllWriterOptions
+  , writerIncremental      = writerIncremental defaultHakyllWriterOptions
+  , writerHTMLMathMethod   = MathJax ""
+  , writerNumberSections   = writerNumberSections defaultHakyllWriterOptions
+  , writerNumberOffset     = writerNumberOffset defaultHakyllWriterOptions
+  , writerSectionDivs      = writerSectionDivs defaultHakyllWriterOptions
+  , writerExtensions       = writerExtensions defaultHakyllWriterOptions
+  , writerReferenceLinks   = writerReferenceLinks defaultHakyllWriterOptions
+  , writerDpi              = writerDpi defaultHakyllWriterOptions
+  , writerWrapText         = writerWrapText defaultHakyllWriterOptions
+  , writerColumns          = writerColumns defaultHakyllWriterOptions
+  , writerEmailObfuscation = writerEmailObfuscation defaultHakyllWriterOptions
+  , writerIdentifierPrefix = writerIdentifierPrefix defaultHakyllWriterOptions
+  , writerCiteMethod       = Citeproc
+  , writerHtmlQTags        = writerHtmlQTags defaultHakyllWriterOptions
+  , writerSlideLevel       = writerSlideLevel defaultHakyllWriterOptions
+  , writerTopLevelDivision = writerTopLevelDivision defaultHakyllWriterOptions
+  , writerListings         = writerListings defaultHakyllWriterOptions
+  , writerHighlightStyle   = writerHighlightStyle defaultHakyllWriterOptions
+  , writerSetextHeaders    = writerSetextHeaders defaultHakyllWriterOptions
+  , writerEpubSubdirectory = writerEpubSubdirectory defaultHakyllWriterOptions
+  , writerEpubMetadata     = writerEpubMetadata defaultHakyllWriterOptions
+  , writerEpubFonts        = writerEpubFonts defaultHakyllWriterOptions
+  , writerEpubChapterLevel = writerEpubChapterLevel defaultHakyllWriterOptions
+  , writerTOCDepth         = writerTOCDepth defaultHakyllWriterOptions
+  , writerReferenceDoc     = writerReferenceDoc defaultHakyllWriterOptions
+  , writerReferenceLocation= writerReferenceLocation defaultHakyllWriterOptions
+  , writerSyntaxMap        = writerSyntaxMap defaultHakyllWriterOptions
+  , writerPreferAscii      = writerPreferAscii defaultHakyllWriterOptions
+  }
