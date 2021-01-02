@@ -78,6 +78,13 @@ main = hakyll $ do
         >>= applyAsTemplate archiveCtx
         >>= loadAndApplyTemplate "templates/default.html" archiveCtx
         >>= relativizeUrls
+
+  match "publications.html" $ do
+    route   $ idRoute
+    compile $ do
+      getResourceBody
+        >>= loadAndApplyTemplate "templates/default.html" defaultContext
+        >>= relativizeUrls
   ---
   --- END One off Files
   
