@@ -47,10 +47,16 @@ main = hakyll $ do
 
   --- BEGIN One off Files
   ---
-  match (fromList ["about.tex", "contactme.md"]) $ do
+  match "about.tex" $ do
     route   $ setExtension "html"
     compile $ pandocCompiler
-      >>= loadAndApplyTemplate "templates/default.html" defaultContext
+      >>= loadAndApplyTemplate "templates/default.html" (navBarContext AboutMyWorkPage <> defaultContext)
+      >>= relativizeUrls
+
+  match "contactme.md" $ do
+    route   $ setExtension "html"
+    compile $ pandocCompiler
+      >>= loadAndApplyTemplate "templates/default.html" (navBarContext ContactMePage <> defaultContext)
       >>= relativizeUrls
 
   create ["archive.html"] $ do
@@ -59,8 +65,9 @@ main = hakyll $ do
       posts <- recentFirst =<< loadAll "posts/*"
       let
         archiveCtx =
-          listField "posts" postCtx (return posts) <>
-          constField "title" "Archive"             <>
+          listField "posts" postCtx (return posts)  <>
+          constField "title" "Archive"              <>
+          navBarContext ArchivePage                 <>
           defaultContext
 
       makeItem ""
@@ -72,7 +79,7 @@ main = hakyll $ do
     route   $ setExtension "html"
     compile $ do
       posts <- recentFirst =<< loadAll "posts/*"
-      let archiveCtx = listField "posts" postCtx (return posts) <> defaultContext
+      let archiveCtx = navBarContext HomePage <> listField "posts" postCtx (return posts) <> defaultContext
 
       getResourceBody
         >>= applyAsTemplate archiveCtx
@@ -83,7 +90,7 @@ main = hakyll $ do
     route   $ idRoute
     compile $ do
       getResourceBody
-        >>= loadAndApplyTemplate "templates/default.html" defaultContext
+        >>= loadAndApplyTemplate "templates/default.html" (navBarContext PublicationsPage <> defaultContext)
         >>= relativizeUrls
   ---
   --- END One off Files
@@ -96,6 +103,7 @@ main = hakyll $ do
 postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" <>
+    navBarContext OtherPage <>
     defaultContext
 --------------------------------------------------------------------------------
 loadLaTeXPostBibliography :: String -> Item Pandoc -> Compiler (IO Pandoc)
@@ -170,3 +178,44 @@ laTeXWriterOptions =
   , writerSyntaxMap        = writerSyntaxMap defaultHakyllWriterOptions
   , writerPreferAscii      = writerPreferAscii defaultHakyllWriterOptions
   }
+
+--------------------------------------------------------------------------------
+--- NAVBAR DATATYPES
+---   Which navbar buttons are active is dependent on the page we are on.
+---   These data types try to easily capture that information.
+---
+data ActivePage =
+    OtherPage
+  | HomePage
+  | PublicationsPage
+  | AboutMyWorkPage
+  | ArchivePage
+  | ContactMePage
+
+navBarContext :: ActivePage -> Context a
+navBarContext OtherPage =
+  constField "LinkHomeProperties" classnavlink <>
+  constField "LinkPublicationsProperties" classnavlink <>
+  constField "LinkAboutProperties" classnavlink <>
+  constField "LinkArchiveProperties" classnavlink <>
+  constField "LinkContactProperties" classnavlink
+  where
+    classnavlink = "class=\"nav-link\""
+
+navBarContext HomePage =
+  navBarActivePageSetting "LinkHomeProperties" <> navBarContext OtherPage
+navBarContext PublicationsPage =
+  navBarActivePageSetting "LinkPublicationsProperties" <> navBarContext OtherPage
+navBarContext AboutMyWorkPage =
+  navBarActivePageSetting "LinkAboutProperties" <> navBarContext OtherPage
+navBarContext ArchivePage =
+  navBarActivePageSetting "LinkArchiveProperties" <> navBarContext OtherPage
+navBarContext ContactMePage =
+  navBarActivePageSetting "LinkContactProperties" <> navBarContext OtherPage 
+
+navBarActivePageSetting :: String -> Context a
+navBarActivePageSetting variable =
+  constField variable "class=\"nav-link active\" aria-current=\"page\""
+
+---
+--------------------------------------------------------------------------------
