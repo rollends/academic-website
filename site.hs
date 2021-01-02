@@ -50,14 +50,12 @@ main = hakyll $ do
   match "about.tex" $ do
     route   $ setExtension "html"
     compile $ pandocCompiler
-      >>= loadAndApplyTemplate "templates/default.html" (navBarContext AboutMyWorkPage <> defaultContext)
-      >>= relativizeUrls
+      >>= defaultCompiler defaultContext AboutMyWorkPage
 
   match "contactme.md" $ do
     route   $ setExtension "html"
     compile $ pandocCompiler
-      >>= loadAndApplyTemplate "templates/default.html" (navBarContext ContactMePage <> defaultContext)
-      >>= relativizeUrls
+      >>= defaultCompiler defaultContext ContactMePage
 
   create ["archive.html"] $ do
     route idRoute
@@ -67,45 +65,60 @@ main = hakyll $ do
         archiveCtx =
           listField "posts" postCtx (return posts)  <>
           constField "title" "Archive"              <>
-          navBarContext ArchivePage                 <>
           defaultContext
 
       makeItem ""
         >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-        >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-        >>= relativizeUrls
+        >>= defaultCompiler archiveCtx HomePage
 
-  match "index.html" $ do
-    route   $ setExtension "html"
-    compile $ do
-      posts <- recentFirst =<< loadAll "posts/*"
-      let archiveCtx = navBarContext HomePage <> listField "posts" postCtx (return posts) <> defaultContext
-
-      getResourceBody
-        >>= applyAsTemplate archiveCtx
-        >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-        >>= relativizeUrls
+  match "index.html" $
+    let
+      fourRecentPosts = (return . (take 4)) =<< recentFirst =<< loadAll "posts/*"
+      archiveCtx      = navBarContext HomePage <>
+                        listField "posts" postCtx fourRecentPosts <>
+                        defaultContext
+    in do
+      route   $ setExtension "html"
+      compile $
+        getResourceBody
+          >>= applyAsTemplate archiveCtx
+          >>= defaultCompiler archiveCtx HomePage
 
   match "publications.html" $ do
     route   $ idRoute
     compile $ do
       getResourceBody
-        >>= loadAndApplyTemplate "templates/default.html" (navBarContext PublicationsPage <> defaultContext)
-        >>= relativizeUrls
+        >>= defaultCompiler defaultContext PublicationsPage
   ---
   --- END One off Files
   
   --- Template Compilation
   match "templates/*" $ compile templateBodyCompiler
 
+--------------------------------------------------------------------------------
+
+defaultCompiler :: Context String -> ActivePage -> Item String -> Compiler (Item String)
+defaultCompiler ctx page item =
+  loadAndApplyTemplate "templates/default.html" context item
+    >>= relativizeUrls
+  where
+    context = navBarContext page <> ctx
 
 --------------------------------------------------------------------------------
+
 postCtx :: Context String
 postCtx =
-    dateField "date" "%B %e, %Y" <>
-    navBarContext OtherPage <>
-    defaultContext
+  dateField "date" "%B %e, %Y" <>
+  navBarContext OtherPage <>
+  defaultContext
+
+postCompiler :: Item String -> Compiler (Item String)
+postCompiler item =
+  loadAndApplyTemplate "templates/post.html" postCtx item
+    >>= defaultCompiler postCtx OtherPage
+
 --------------------------------------------------------------------------------
+
 loadLaTeXPostBibliography :: String -> Item Pandoc -> Compiler (IO Pandoc)
 loadLaTeXPostBibliography filepath (Item id (Pandoc meta docBody)) =
   return $ processCites' $ Pandoc newMetadata docBody
@@ -131,16 +144,12 @@ laTeXPostWithBibCompiler = do
     >>= loadLaTeXPostBibliography bibfilepath
     >>= unsafeCompiler
     >>= \document -> return (writePandocWith laTeXWriterOptions (Item identifier document))
-    >>= loadAndApplyTemplate "templates/post.html" postCtx 
-    >>= loadAndApplyTemplate "templates/default.html" postCtx
-    >>= relativizeUrls
+    >>= postCompiler
 
 laTeXPostCompiler :: Compiler (Item String)
 laTeXPostCompiler =
   pandocCompilerWith defaultHakyllReaderOptions laTeXWriterOptions
-    >>= loadAndApplyTemplate "templates/post.html" postCtx
-    >>= loadAndApplyTemplate "templates/default.html" postCtx
-    >>= relativizeUrls
+    >>= postCompiler
 
 --- The Messy Pandoc Writer Options for reading LaTeX Docs.
 laTeXWriterOptions =
