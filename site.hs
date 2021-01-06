@@ -69,7 +69,7 @@ main = hakyll $ do
 
       makeItem ""
         >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-        >>= defaultCompiler archiveCtx HomePage
+        >>= defaultCompiler archiveCtx ArchivePage
 
   match "index.html" $
     let
@@ -207,24 +207,36 @@ navBarContext OtherPage =
   constField "LinkPublicationsProperties" classnavlink <>
   constField "LinkAboutProperties" classnavlink <>
   constField "LinkArchiveProperties" classnavlink <>
-  constField "LinkContactProperties" classnavlink
+  constField "LinkContactProperties" classnavlink <>
+  constField "IconHomeStyle" classnavlink <>
+  constField "IconPublicationsStyle" classnavlink <>
+  constField "IconAboutStyle" classnavlink <>
+  constField "IconArchiveStyle" classnavlink <>
+  constField "IconContactStyle" classnavlink
   where
     classnavlink = "class=\"nav-link\""
+    style = ""
 
 navBarContext HomePage =
-  navBarActivePageSetting "LinkHomeProperties" <> navBarContext OtherPage
+  navBarActivePageSetting "LinkHomeProperties" "IconHomeStyle" <>
+  navBarContext OtherPage
 navBarContext PublicationsPage =
-  navBarActivePageSetting "LinkPublicationsProperties" <> navBarContext OtherPage
+  navBarActivePageSetting "LinkPublicationsProperties" "IconPublicationsStyle" <> 
+  navBarContext OtherPage
 navBarContext AboutMyWorkPage =
-  navBarActivePageSetting "LinkAboutProperties" <> navBarContext OtherPage
+  navBarActivePageSetting "LinkAboutProperties" "IconAboutStyle" <> 
+  navBarContext OtherPage
 navBarContext ArchivePage =
-  navBarActivePageSetting "LinkArchiveProperties" <> navBarContext OtherPage
+  navBarActivePageSetting "LinkArchiveProperties" "IconArchiveStyle" <> 
+  navBarContext OtherPage
 navBarContext ContactMePage =
-  navBarActivePageSetting "LinkContactProperties" <> navBarContext OtherPage 
+  navBarActivePageSetting "LinkContactProperties" "IconContactStyle" <> 
+  navBarContext OtherPage 
 
-navBarActivePageSetting :: String -> Context a
-navBarActivePageSetting variable =
-  constField variable "class=\"nav-link active\" aria-current=\"page\""
+navBarActivePageSetting :: String -> String -> Context a
+navBarActivePageSetting v1 v2 =
+  constField v1 "class=\"nav-link active\" aria-current=\"page\"" <>
+  constField v2 "filter: brightness(2);"
 
 ---
 --------------------------------------------------------------------------------
