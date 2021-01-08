@@ -35,6 +35,10 @@ main = hakyll $ do
       route   idRoute
       compile copyFileCompiler
 
+  match "webroot/**" $ do
+      route   $ gsubRoute "webroot/" (const "")
+      compile $ copyFileCompiler
+
   match "scripts/*" $ do
       route   idRoute
       compile copyFileCompiler
