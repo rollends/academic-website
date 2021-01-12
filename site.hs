@@ -212,11 +212,11 @@ navBarContext OtherPage =
   constField "LinkAboutProperties" classnavlink <>
   constField "LinkArchiveProperties" classnavlink <>
   constField "LinkContactProperties" classnavlink <>
-  constField "IconHomeStyle" classnavlink <>
-  constField "IconPublicationsStyle" classnavlink <>
-  constField "IconAboutStyle" classnavlink <>
-  constField "IconArchiveStyle" classnavlink <>
-  constField "IconContactStyle" classnavlink
+  constField "IconHomeStyle" style <>
+  constField "IconPublicationsStyle" style <>
+  constField "IconAboutStyle" style <>
+  constField "IconArchiveStyle" style <>
+  constField "IconContactStyle" style
   where
     classnavlink = "class=\"nav-link\""
     style = ""
