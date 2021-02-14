@@ -24,7 +24,7 @@ It is then a matter of collapsing this summation into one fraction and matching 
 Solving a linear system of equations is how a computer would do it.
 But how would a practicing engineer do it without a computer?
 
-\paragraph{Heaviside Cover-up Method}
+\section{Heaviside Cover-up Method}
 The \href{https://en.wikipedia.org/wiki/Heaviside_cover-up_method}{Heaviside Cover-up Method} is a method named after engineer Oliver Heaviside to discover the coefficients \(A_{i, k}\) through direct evaluation.
 Fix a root \(r_i.\)
 There are \(\kappa_i\) coefficients \(A_{i, 1}\) up to \(A_{i, \kappa_i}\) associated to this root.
@@ -87,7 +87,7 @@ In particular,
 Repeat until all the coefficients associated to the root \(r_i\) are resolved.
 And yes, since the other coefficients remain unmutated by this process of producing new transforms, you can use the \emph{reduced order} transform to compute the other coefficients as well thereby simplifying the computations you perform at every step!
 
-\paragraph{Example}
+\section{Example}
 It is best to demonstrate by way of example.
 Consider the transform
 \[

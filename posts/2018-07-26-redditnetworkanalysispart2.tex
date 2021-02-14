@@ -6,11 +6,11 @@ date  :   "2018-07-26"
 Finally we can jump into the analysis!
 The purpose of this post is to describe the essential model used for detect key content generators or posts and show what happens when we apply the techniques discussed in the previous post to the \texttt{/r/uwaterloo} subreddit.
 
-\paragraph{The Model}
+\section{The Model}
 I could dive straight into the model construction, but I think it is of much greater value to spend some time walking through my thought process.
 That way, you can see how I came to my results, and can see the flaws of my approach in all their glory.
 
-\paragraph{The Forest of Posts}
+\subsection{The Forest of Posts}
 Reddit already has an implicit graph structure embedded in subreddits. One may view a subreddit as a set of submissions, that each are connected to its comments in a tree like fashion. The following diagram depicts the idea.
 %
 \begin{figure}
@@ -47,7 +47,7 @@ It only shows how any individual post is affected by its child comments.
 What we really want to know is how this post, its comments, and their authors compare to every other piece of content and user active on the containing subreddit.
 This motivates an expansion of this graph.
 
-\paragraph{Users Matter}
+\subsection{Users Matter}
 What makes content interesting is the content creator.
 So we would like to add users to the mix! We begin with the simplest of assumptions,
 
@@ -78,7 +78,7 @@ The idea is that a user would not comment at all unless the post engaged them, p
 Note that the assumption is that users are influenced by the root submission and \emph{not} the immediate parent node.
 This is a simplification. It may be of value to include this extra edge but I do not.
 
-\paragraph{The Resulting Graph}
+\subsection{The Resulting Graph}
 So with the above assumption we can transform the example graph into the final form,
 %
 \begin{figure}
@@ -87,7 +87,7 @@ So with the above assumption we can transform the example graph into the final f
 \end{figure}
 %
 
-\paragraph{The Analysis}
+\section{The Analysis}
 In an earlier post I discussed the Katz Centrality Measure. Recall,
 
 \textbf{Definition:} Let \(A\) be an adjacency matrix for some graph.

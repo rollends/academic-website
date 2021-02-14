@@ -118,7 +118,7 @@ postCtx =
 
 postCompiler :: Item String -> Compiler (Item String)
 postCompiler item =
-  loadAndApplyTemplate "templates/post.html" postCtx item
+    loadAndApplyTemplate "templates/post.html" postCtx (fmap demoteHeaders item)
     >>= defaultCompiler postCtx OtherPage
 
 --------------------------------------------------------------------------------
