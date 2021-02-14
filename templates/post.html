@@ -1,11 +1,15 @@
-<article>
-  <section>
-    $body$
-  </section>
-  <section class="footer" style="text-align: right">
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 id="post-title" itemprop="headline">$title$</h1>
+    <link itemprop="url" href="#post-title">
+  </header>
+  $body$
+  <footer class="footer" style="text-align: right">
     $if(author)$
-      <h6>&mdash;$author$</h6>
+      <span itemprop="creator" itemscope itemtype="http://schema.org/Person">
+        <h6>&mdash;<span itemprop="name">$author$</span></h6>
+      </span>
     $endif$
-    $date$
-  </section>
+    <time itemprop="datePublished" datetime="$date$">$date$</time>
+  </footer>
 </article>

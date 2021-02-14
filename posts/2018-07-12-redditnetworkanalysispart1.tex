@@ -6,9 +6,7 @@ date  :   "2018-07-12"
 My first investigation involves attempting to detect key content or users in a given community.
 I begin by establishing the model and various mathematical preliminaries.
 
-\paragraph{Mathematical Preliminaries}
-
-\paragraph{Basic Definitions}
+\section{Basic Definitions}
 Networks can be modelled by nodes that are connected together by edges.
 The mathematics of \emph{Algebraic Graph Theory} gives us the tools we need for this section.
 In this case, we introduce the language used for directed graphs.
@@ -45,7 +43,7 @@ Note how the following proposition leverages the fact that we assumed $A$ is non
 
 \textbf{Proposition:} Let \(M_k(A) = \sum_{l=1}^k A^l.\) A path from node \(i\) to node \(j\) exists if and only if there exists a \(k \in \mathbb{N}\) so that \((M_k(A))_{i,j} > 0.\)
 
-\paragraph{Centrality Measures}
+\section{Centrality Measures}
 Centrality measures are a way to assess the degree to which any given node is "central" to the graph.
 The definition of ``central'' here depends on the measure used.
 They all make an attempt to capture the idea of a node that is highly connected to tons of other nodes in the graph;

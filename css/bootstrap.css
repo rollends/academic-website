@@ -10777,4 +10777,42 @@ blockquote {
   border-radius: 0.25rem;
   padding: 1rem 1rem;
 }
-/*# sourceMappingURL=bootstrap.css.map */
+
+article h1 {
+  font-size: calc(1rem + 1vw);
+}
+article h2 {
+  font-size: calc(1rem + 0.75vw);
+}
+article h3 {
+  font-size: calc(1rem + 0.50vw);
+}
+article h4 {
+  font-size: calc(1rem + 0.25vw);
+}
+article h5 {
+  font-size: calc(1rem + 0.10vw);
+}
+article h5 {
+  font-size: 1rem;
+}
+
+@media (min-width: 1200px) {
+  article h1 {
+    font-size: calc(1rem + 12px);
+  }
+  article h2 {
+    font-size: calc(1rem + 9px);
+  }
+  article h3 {
+    font-size: calc(1rem + 6px);
+  }
+  article h4 {
+    font-size: calc(1rem + 3px);
+  }
+  article h5 {
+    font-size: calc(1rem + 1.2px);
+  }
+}
+
+/* ROLLEN'S ADDITIONS */
