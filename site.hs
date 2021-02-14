@@ -53,7 +53,7 @@ main = hakyll $ do
   ---
   match "about.tex" $ do
     route   $ setExtension "html"
-    compile $ pandocCompiler
+    compile $ pandocCompilerWith defaultHakyllReaderOptions laTeXWriterOptions
       >>= defaultCompiler defaultContext AboutMyWorkPage
 
   match "contactme.md" $ do
@@ -163,7 +163,7 @@ laTeXWriterOptions =
   , writerTabStop          = writerTabStop defaultHakyllWriterOptions
   , writerTableOfContents  = writerTableOfContents defaultHakyllWriterOptions
   , writerIncremental      = writerIncremental defaultHakyllWriterOptions
-  , writerHTMLMathMethod   = MathJax ""
+  , writerHTMLMathMethod   = MathJax defaultMathJaxURL
   , writerNumberSections   = writerNumberSections defaultHakyllWriterOptions
   , writerNumberOffset     = writerNumberOffset defaultHakyllWriterOptions
   , writerSectionDivs      = writerSectionDivs defaultHakyllWriterOptions
@@ -189,7 +189,7 @@ laTeXWriterOptions =
   , writerReferenceDoc     = writerReferenceDoc defaultHakyllWriterOptions
   , writerReferenceLocation= writerReferenceLocation defaultHakyllWriterOptions
   , writerSyntaxMap        = writerSyntaxMap defaultHakyllWriterOptions
-  , writerPreferAscii      = writerPreferAscii defaultHakyllWriterOptions
+  , writerPreferAscii      = False
   }
 
 --------------------------------------------------------------------------------
