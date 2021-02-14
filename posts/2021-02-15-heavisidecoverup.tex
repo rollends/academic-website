@@ -4,7 +4,7 @@ author:   "Rollen S. D'Souza"
 date  :   "2021-02-15"
 ---
 Engineering students take introductory courses in ordinary differential equations where they encounter a barrage of Laplace transforms they must invert.
-The formal inverse is a contour integral over the region of convergence (in the \(s\)-domain) but this is difficult to do efficiently.
+The formal inverse is a contour integral over the region of convergence of the transform in the \(s\)-domain but this is difficult to do efficiently.
 Since engineering courses primarily discuss finite-dimensional linear ordinary differential equations there is a specific, restricted class of transforms they observe.
 All the Laplace transforms an engineer will see take the form
 \[
@@ -55,7 +55,7 @@ Wikipedia gives an answer that puts me off, quite frankly:
 This is obviously absurd. 
 It works for second order roots, but what about if the root was repeated 5 times over?
 You will need to evaluate at 4 points!
-Which then begs the question: why bother with heaviside cover-up and just evaluate \(F(s)\) at points away from its discontinuities.
+Moreover, it begs the question: why bother with heaviside cover-up and just use this point evaluation technique on the original \(F(s)\) at points away from its discontinuities.
 That too determines the coefficients of the partial fraction expansion!
 
 \textbf{No.}
@@ -70,8 +70,8 @@ Since we know the coefficient \(A_{i, \kappa_i}\) we can define a \emph{new} Lap
 Facts:
 \begin{enumerate}
   \item{\(F(s)\) has a partial fraction expansion with root \(r_i\) appearing with order \(\kappa_i\),}
-  \item{the latter term cancels this higher order term,}
-  \item{\(G(s)\) is expressed as a partial fraction expansion with root \(r_i\) appearing with order \(\kappa_i - 1,\)}
+  \item{the latter term cancels this higher order term in the partial fraction expansion of \(F(s),\)}
+  \item{\(G(s)\) is now expressed as the partial fraction expansion of \(F(s)\) with root \(r_i\) appearing at an order less than, or equal to, \(\kappa_i - 1,\)}
   \item{\(G(s)\) has a pole at \(r_i\) with order \emph{at most}, but possibly less than, \(\kappa_i - 1,\)}
   \item{the coefficients of the partial fraction expansion of \(G(s)\) are equal to that of \(F(s)\) with the exception of the \(A_{i, \kappa_i}\) that does not appear.}
 \end{enumerate}
