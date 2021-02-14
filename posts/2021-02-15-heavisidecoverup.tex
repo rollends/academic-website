@@ -1,0 +1,203 @@
+---
+title :   "On the Heaviside Cover-up Method"
+author:   "Rollen S. D'Souza"
+date  :   "2021-02-15"
+---
+Engineering students take introductory courses in ordinary differential equations where they encounter a barrage of Laplace transforms they must invert.
+The formal inverse is a contour integral over the region of convergence (in the \(s\)-domain) but this is difficult to do efficiently.
+Since engineering courses primarily discuss finite-dimensional linear ordinary differential equations there is a specific, restricted class of transforms they observe.
+All the Laplace transforms an engineer will see take the form
+\[
+  F(s) = \frac{a_{n-1} s^{n-1} + \cdots + a_1 s + a_0}{s^n + b_{n-1} s^{n-1} + \cdots + b_1 s + b_0}
+\]
+where \(a_i, b_i \in \mathbb{R}.\)
+The fundamental theorem of algebra allows us to rewrite the denominator as
+\[
+  F(s) = \frac{a_{n-1} s^{n-1} + \cdots + a_1 s + a_0}{\prod (s - r_i)^{\kappa_i}}
+\]
+where \(r_i \in \mathbb{C}\) are the unique roots of the polynomial with multiplicity \(\kappa_i \in \mathbb{N}.\)
+Observe that the right hand-side, by algebra, can be written as a finite sum of rational maps
+\[
+  F(s) = \sum_i \sum_{k = 1}^{\kappa_i} \frac{A_{i, k}}{(s - r_i)^k}
+\]
+It is then a matter of collapsing this summation into one fraction and matching the unknown coefficients \(A_{i, k}\) with those that form the numerator polynomial \(a_{n-1},\ldots, a_0\); this results in a \emph{large} system of linear equations.
+Solving a linear system of equations is how a computer would do it.
+But how would a practicing engineer do it without a computer?
+
+\paragraph{Heaviside Cover-up Method}
+The \href{https://en.wikipedia.org/wiki/Heaviside_cover-up_method}{Heaviside Cover-up Method} is a method named after engineer Oliver Heaviside to discover the coefficients \(A_{i, k}\) through direct evaluation.
+Fix a root \(r_i.\)
+There are \(\kappa_i\) coefficients \(A_{i, 1}\) up to \(A_{i, \kappa_i}\) associated to this root.
+Observe that if we multiply both sides of the partial fraction expansion by \((s - r_i)^{\kappa_i}\) we arrive at
+\[
+  (s - r_i)^{\kappa_i} F(s)
+    =
+    A_{i, \kappa_i}
+    +
+    \sum_{k=1}^{\kappa_i - 1} (s - r_i)^{\kappa_i - k} A_{i, k}
+    +
+    \sum_{j\neq i} \sum_{k = 1}^{\kappa_i} A_{i, k} \frac{(s - r_i)^{\kappa_i}}{(s - r_i)^k}.
+\]
+Now consider the limit of both sides of this expression as \(s\to r_i.\)
+Necessarily the latter two summations must vanish, as they have zeros at \(r_i\) but no poles (infinite discontinuities at \(r_i\)).
+This results in the rule
+\[
+  A_{i, \kappa_i} = \lim_{s \to r_i} (s - r_i)^{\kappa_i} F(s).
+\]
+In simpler terms, to produce the coefficient \(A_{i, \kappa_i}\) evaluate \(F(s)\) at \(r_i\) but exclude the denominator factors of \(F(s)\) that will blowup at \(r_i.\)
+This is all pretty well explained in the Wikipedia article linked.
+However there is a piece that is left out of the Wikipedia article as it stands.
+How do you solve for all the other coefficients associated to the lower powers of \(r_i\)?
+Wikipedia gives an answer that puts me off, quite frankly:
+\begin{quote}
+  Since the equation of the numerators... is true for all values of \(x,\) pick a value for \(x\) and use it to solve for [\(A_{i, \kappa_i - 1}\)].
+\end{quote}
+This is obviously absurd. 
+It works for second order roots, but what about if the root was repeated 5 times over?
+You will need to evaluate at 4 points!
+Which then begs the question: why bother with heaviside cover-up and just evaluate \(F(s)\) at points away from its discontinuities.
+That too determines the coefficients of the partial fraction expansion!
+
+\textbf{No.}
+We will not take this approach.
+Because it is actually far simpler than this.
+Since we know the coefficient \(A_{i, \kappa_i}\) we can define a \emph{new} Laplace transform
+\[
+  G(s)
+    = 
+      F(s) - \frac{A_{i, \kappa_i}}{(s - r_i)^{\kappa_i}}.
+\]
+Facts:
+\begin{enumerate}
+  \item{\(F(s)\) has a partial fraction expansion with root \(r_i\) appearing with order \(\kappa_i\),}
+  \item{the latter term cancels this higher order term,}
+  \item{\(G(s)\) is expressed as a partial fraction expansion with root \(r_i\) appearing with order \(\kappa_i - 1,\)}
+  \item{\(G(s)\) has a pole at \(r_i\) with order \emph{at most}, but possibly less than, \(\kappa_i - 1,\)}
+  \item{the coefficients of the partial fraction expansion of \(G(s)\) are equal to that of \(F(s)\) with the exception of the \(A_{i, \kappa_i}\) that does not appear.}
+\end{enumerate}
+So now we can repeat the algorithm described above for \(G(s)\) to solve for the lower order coefficients.
+In particular,
+\[
+  A_{i, \kappa_i - 1}
+    =
+      \lim_{s \to r_i} (s - r_i)^{\kappa_i - 1} G(s)
+    =
+      \lim_{s \to r_i} \frac{(s - r_i)^{\kappa_i} F(s) - A_{i, \kappa_i}}{s - r_i}.
+\]
+Repeat until all the coefficients associated to the root \(r_i\) are resolved.
+And yes, since the other coefficients remain unmutated by this process of producing new transforms, you can use the \emph{reduced order} transform to compute the other coefficients as well thereby simplifying the computations you perform at every step!
+
+\paragraph{Example}
+It is best to demonstrate by way of example.
+Consider the transform
+\[
+  F(s)
+    =
+      \frac{s - 3}{(s + 3)^3 (s - 1)}.
+\]
+We know we can write this function in expanded form as
+\[
+  F(s)
+    =
+      \frac{A_{1,1}}{s + 3} + \frac{A_{1,2}}{(s + 3)^2} + \frac{A_{1,3}}{(s + 3)^3}
+      +
+      \frac{A_{2,1}}{s - 1}. 
+\]
+Coefficient \(A_{1, 3}\) is, by our formula,
+\[
+  A_{1, 3} 
+    =
+      \lim_{s \to -3} (s + 3)^3 F(s)
+    =
+      \lim_{s \to -3} \frac{s - 3}{s - 1}
+    =
+      \frac{3}{2}.
+\]
+Substituting this number into our partial fraction expansion
+\[
+  F(s)
+    =
+      \frac{A_{1,1}}{s + 3} + \frac{A_{1,2}}{(s + 3)^2} + \frac{3/2}{(s + 3)^3}
+      +
+      \frac{A_{2,1}}{s - 1}. 
+\]
+Define \(G(s) = F(s) - (3/2)1/(s + 3)^3.\)
+Simplify this to obtain an expression for \(G(s),\)
+\[
+  G(s)
+    =
+      \frac{s - 3}{(s + 3)^3 (s - 1)} - \frac{(3/2)(s - 1)}{(s + 3)^3 (s - 1)}
+    =
+      \frac{-\frac{1}{2}s - \frac{3}{2}}{(s + 3)^3 (s - 1)}
+    =
+      -\frac{1}{2}
+      \frac{1}{(s+3)^2 (s - 1)}.
+\]
+Moreover, from our partial fraction expansion for \(F(s)\) we see that \(G(s)\) must also take the form
+\[
+  G(s)
+    =
+      \frac{A_{1,1}}{s + 3} + \frac{A_{1,2}}{(s + 3)^2}
+      +
+      \frac{A_{2,1}}{s - 1},
+\]
+where the \(A_{i, k}\) are the same variables as before.
+As a result, we can compute \(A_{1, 2}\) using our formula again
+\[
+  A_{1, 2} 
+    =
+      \lim_{s \to -3} (s + 3)^2 G(s)
+    =
+      \lim_{s \to -3} -\frac{1}{2}\frac{1}{s - 1}
+    =
+      \frac{1}{8}.
+\]
+So we have that
+\[
+  G(s)
+    =
+      \frac{A_{1,1}}{s + 3} + \frac{1/8}{(s + 3)^2}
+      +
+      \frac{A_{2,1}}{s - 1}.
+\]
+Once again, define a new function \(H(s) = G(s) - (1/8) 1/(s+3)^2\) and simplify to arrive at the expression
+\[
+\begin{aligned}
+  H(s) 
+    &=
+      -\frac{1}{2}
+      \frac{1}{(s+3)^2 (s - 1)}
+      -
+      \frac{1}{8}
+      \frac{s - 1}{(s+3)^2 (s-1)}\\
+    &=
+      -\frac{1}{2}
+      \left[
+        \frac{\frac{1}{4} s + \frac{3}{4}}{(s+3)^2 (s-1)}
+      \right]\\
+    &=
+      -\frac{1}{8}
+      \frac{1}{(s+3)(s-1)}.
+\end{aligned}
+\] 
+The partial fraction expansion of \(H(s)\) must take the form
+\[
+  H(s)
+    =
+      \frac{A_{1,1}}{s + 3}
+      +
+      \frac{A_{2,1}}{s - 1}.
+\]
+At this point it should be clear the advantages of employing this strategy.
+Of course these final coefficients can be found by employing the same formulas:
+\[
+  A_{1, 1} = \frac{1}{32},\quad A_{2,1} = -\frac{1}{32}.
+\]
+This gives the complete partial fraction expansion for \(F(s)\)
+\[
+  F(s)
+    =
+      \frac{1/32}{s + 3} + \frac{1/8}{(s + 3)^2} + \frac{3/2}{(s + 3)^3}
+      +
+      \frac{-1/32}{s - 1}. 
+\]
