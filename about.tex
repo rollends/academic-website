@@ -3,11 +3,11 @@ title : About My Work
 author: Rollen S. D'Souza
 ---
 It may be unclear, even to those who skim my papers, what exactly it is I study.
-I study the novel application of mathematics to control design, specifically nonlinear control design.
+I study the application of mathematics to control design, specifically nonlinear control design.
 
-As a graduate student, my work focusses on applying exterior differential systems, an esoteric theory of partial differential equations and differential geometry, to feedback linearization problems.
+My work focusses on applying exterior differential systems, an esoteric theory of partial differential equations and differential geometry, to feedback linearization problems.
 It is best to show by way of example what this means.
-Consider you have a differential equation model of system with two states \((x(t), y(t))\in\mathbb{R}\) which observe
+Consider you have a differential equation model of system with two states \((x(t), y(t))\in\mathbb{R}\) given by
 \[
 \begin{aligned}
   \dot{x}(t) &= y(t)^3 + (y(t) + 1) u(t),\\
@@ -15,6 +15,7 @@ Consider you have a differential equation model of system with two states \((x(t
 \end{aligned}
 \]
 and say you could control a real number \(u(t)\in\mathbb{R}\) at any moment of time \(t \in \mathbb{R}.\)
+This is a common problem that appears in designing autopilots or robotic control systems.
 Does there exist an input \(u(t)\) that drives the states \(x(t)\) and \(y(t)\) to \(0\)?
 To answer this question, let us first ask a different question.
 Can we find a change of coordinates \(\Phi: (x,y,u) \mapsto (w,z,v)\) so that the dynamics look like
@@ -24,7 +25,7 @@ Can we find a change of coordinates \(\Phi: (x,y,u) \mapsto (w,z,v)\) so that th
   \dot{z}(t) &= v(t).
 \end{aligned}
 \]
-For this system, we know that we can easily drive \(w(t)\) and \(z(t)\) to \(0\) by choosing
+For this system, we know from linear system theory (an undergraduate engineering topic) that we can drive \(w(t)\) and \(z(t)\) to \(0\) by choosing
 \[
   v(t) = k_1 w(t) + k_2 z(t),\quad k_1, k_2 > 0.
 \]
@@ -51,18 +52,19 @@ Using the tools of exterior differential calculus (or a little ingenuity as this
     - 2 (y + 1)^2 x.
 \end{aligned}
 \]
-In these coordinates --- of course assuming the coordinate transformation is valid, which it only is on a small open set containing the origin \((x,y) = 0\) --- the differential equation model looks like a linear system (in fact, a double integrator \(1/s^2\)) so control design is rendered trivial.
+In these coordinates --- of course assuming the coordinate transformation is valid, which it is only on a small open set containing the origin \((x,y) = 0\) --- the differential equation model looks like a linear system.
+In fact, it is a double integrator \(1/s^2\)) so control design is rendered trivial as described earlier by our choice for \(v(t)\).
 
-The question of how to find such a coordinate change was resolved in the early 80s and 90s by Hermann, Gardner, Shadwick and Sussman.
-Hermann and Sussman developed conditions upon which the coordinate change exists.
+The question of how to find such a coordinate change was resolved in the early 80s and 90s by a number of control theorists and their development.
+These include Hermann, Gardner, Shadwick, Hunt and Su.
+Hermann, Hunt and Su applied the modern differential geometric tools to determine when such a coordinate change exists.
 Gardner and Shadwick used the exterior differential calculus to make the job of finding this transformation as easy as possible.
-However, what if you only wanted \emph{part} of the system to be controlled?
+
+What if you only wanted \emph{part} of the system to be controlled?
 For example, suppose you wanted your robot to observe a constraint --- such as following a path --- but you were otherwise indifferent about the behaviour of this system?
-What could you do then?
 Transverse feedback linearization was developed by Banaszuk and Hauser in the 90s to tackle this issue in part and was then fully developed by Nielsen and Maggiore in the the early 2010s.
-Unfortunately, the procedure they developed didn't take advantage of the symmetries found in the problem that allow you to easily construct the solution.
-That is, like Hermann and Sussman, their work had produced conditions upon which such a solution exists.
-My work fills this gap by also leveraging the tools of exterior differential calculus, like that of Gardner and Shadwick, to provide a procedure a control designer can use to find the transformation.
+Unfortunately, the procedure they developed didn't take advantage of the symmetries found in the problem that allow you to easily construct the solution as Gardner and Shadwick had.
+My work fills this gap by also leveraging the tools of exterior differential calculus to provide a procedure a control designer can use to find the transformation.
 
 Overall, I want to use math to solve interesting and hard problems in engineering.
 I am interested in applying interesting and otherwise esoteric techniques in mathematics to abstract and foundationally rethink how we go about engineering and understanding systems.
