@@ -1,0 +1,97 @@
+---
+title :   "`Equivalence' for Control Theorists: Part 1"
+author:   "Rollen S. D'Souza"
+date  :   "2021-05-08"
+bib   :   "posts/equivalence.bib"
+---
+Equivalence, in mathematical research, has come to be associated to those class of methods derived from and inspired by Eli\'e Cartan's work on the equivalence of differential geometric structures and, more broadly, to the application of differential geometry to solutions of partial differential equations.
+The topic has a high barrier of entry and the clearest texts on the topic --- \cite{Bryant1999},~\cite{Olver1995},~\cite{Gardner1989} --- demonstrate this quite well.
+For people who wish to use these tools in application areas, like myself, it is daunting.
+The difficulty also makes it hard to see when to turn to such tools!
+
+This blog post series will not even try to make an attempt at breaking this barrier as there is a lot of background material in the way.
+In fact, I simply will avoid discussing equivalence in that way at all.
+So what will I discuss?
+Instead this blog post series will, by way of example, translate the more abstract ways of thinking that led to the processes found in equivalence problems so that you, the reader, has a mental model of what equivalence and more generally mathematics is about.
+
+Ideas of equivalence appear all throughout mathematics.
+One can even argue that mathematics is about equivalence.
+Let me start with a simple statement that you are likely to be familiar with.
+Consider the following partial theorem of linear algebra,
+%
+\begin{quote}
+  \textbf{Conjecture:} Let \(M \in \mathbb{R}^{n\times n}\) be a real \(n\)-by-\(n\) matrix.
+  There exists an invertible matrix \(P\) where \(D = P^{-1} M P\) is a diagonal matrix if, and only if (?).
+  Such a matrix \(M\) is said to be diagonalizable.
+\end{quote}
+%
+where I've left out the condition for diagonalizability.
+This classic theorem is one most undergraduates of mathematics and engineering have seen, used and possibly proven.
+I will not explicitly prove the result, but instead I want to motivate how the condition (?) could be arrived at without a-priori knowledge of the statement.
+That is: what would a theoretician do to find out what (?) should be?
+
+Let us start easy.
+What facts do we know about diagonal matrices?
+The first fact we know: powers are easy.
+Given
+\[
+  D = \begin{pmatrix} 3 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{pmatrix},
+\]
+we can compute \(D^k\) easily
+\[
+  D^k = \begin{pmatrix} 3^k & 0 & 0 \\ 0 & 2^k & 0 \\ 0 & 0 & 2^k \end{pmatrix}.
+\]
+Another fact that makes diagonal matrices special: the product of any two diagonal matrices are diagonal.
+Those are great properties.
+But none of these are properties we can \emph{check} on \(M.\)
+
+Let us try again.
+How about the eigenvectors of \(D\)?
+We know the eigenvectors are the standard basis vectors.
+Observe that for the matrix \(D\) the eigenvectors are \((1,0,0),\) \((0,1,0)\) and \((0,0,1)\) with eigenvalues \(3,\) \(2,\) and \(2\) respectively.
+The eigenspace \(E_3\) corresponding to eigenvalue \(3\) is \(1\)-dimensional and the eigenspace \(E_2\) corresponding to eigenvalue \(2\) is \(2\)-dimensional.
+Why care about these eigenspaces?
+Consider \emph{any} change of coordinates matrix \(P.\)
+What is the dimension of \(P(E_3)\)?
+We know it must be the same dimension as \(E_3\) because \(P\) is an invertible matrix (has full rank).
+Same goes for \(P(E_2).\)
+But we can say more!
+Define the matrix
+\[
+  M = P D P^{-1}.
+\]
+Observe that
+\[\begin{aligned}
+  M P \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} &= 3 P \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix},\\
+  M P \begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} &= 2 P \begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix},\\
+  M P \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix} &= 2 P \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix}
+\end{aligned}\]
+So \(M\) has eigenvalues \(3,\) \(2,\) and \(2\) with corresponding eigenspaces of dimensions \(1\) and \(2\)!
+The eigenvalues are unchanged and, more importantly, the dimension of the eigenspace was left unchanged!
+This we call an \emph{invariant} that is preserved by the change of coordinates \(P.\)
+Notice that if we have the right number of eigenvectors, \(P\) is completely determined.
+So now we can conjecture what (?) ought to be.
+%
+\begin{quote}
+  \textbf{Theorem:} Let \(M \in \mathbb{R}^{n\times n}\) be a real \(n\)-by-\(n\) matrix and let \(E_1,\) \(\ldots,\) \(E_r\) be its corresponding eigenspaces.
+  There exists an invertible matrix \(P\) where \(D = P^{-1} M P\) is a diagonal matrix if, and only if \(\sum_{i=1}^r \mathrm{dim}(E_i) = n.\)
+  Such a matrix \(M\) is said to be diagonalizable.
+\end{quote}
+%
+We haven't proven it formally but the construction of the map \(P\) using the bases for the eigenspaces \(E_i\) is the key ingredient in the proof.
+
+In this example we wanted to find when two matrices \(M\) and \(D\) are equivalent in the sense that there exists a change of coordinates (basis) \(P\) that transforms \(M\) into \(D.\)
+This \emph{transformation} \(P\) makes \(M\) and \(D\) equivalent if it exists.
+This equivalence, we found, preserves some properties.
+In particular, we know it preserves the eigenvalues and the dimension of the eigenspaces of \(M\) and \(D.\)
+We call those properties that are preserved under the transformation \emph{invariants}.
+These invariants are useful, because we know right away that if \(D\) has some property and \(M\) doesn't have the same invariant property, \(D\) cannot be equivalent to \(M.\)
+
+Of course, the fact that every enumerated invariant you can think of holds does not prove that two objects are equivalent.
+You must prove that those invariants somehow allow you to construct the transformation --- the equivalence.
+in this case we construct \(P\) from the invariant described and so it is both necessary that the invariant eigenvalues and eigenspace dimensions are the same for both \(M\) and \(D\) as well sufficient.
+
+\section{References}
+\printbibliography
+
+
