@@ -1,0 +1,168 @@
+---
+title :   "`Equivalence' for Control Theorists: Part 2"
+author:   "Rollen S. D'Souza"
+date  :   "2021-05-09"
+---
+This is a continuation of ```Equivalence' for Control Theorists: Part 1.''
+Now let us move to a problem of linear control theory.
+Let \(x(t) \in \mathbb{R}^n\) be a state that evolves according to the linear control system
+\begin{equation}
+  \label{eqn:system}
+  \dot{x}(t) = A\, x(t) + B\, u(t),
+\end{equation}
+where \(A \in \mathbb{R}^{n\times n},\) \(B \in \mathbb{R}^n\) and \(u(t) \in \mathbb{R}\) is the control input.
+We would like to answer the following question.
+%
+\begin{quote}
+  What conditions must the pair \((A, B)\) satisfy so that there exists an invertible linear transformation \(z = P\, x\) where (1) becomes, in the new coordinates,
+  \begin{equation}
+  \label{eqn:controllablesystem}
+  \begin{aligned}
+    \dot{z}_1(t) &= z_2(t),\\
+    \dot{z}_2(t) &= z_3(t),\\
+                 &\quad\vdots \\
+    \dot{z}_n(t) &= u(t).
+  \end{aligned}
+  \end{equation}
+  The system (2) is said to be in controllable canonical form.
+\end{quote}
+%
+Recalling the philosophy from the previous post, we seek a unique property of the controllable canonical system (2) that is invariant under the transformation \(z = P x\);
+here we are also working with an invertible linear transformation so we know that one useful invariant is the dimension of subspaces.
+
+Compute the Laplace transform of (2) and rearrange to form the algebraic constraint
+\[
+  \begin{pmatrix}
+    s      & -1     & 0      & \cdots & 0      & 0\\
+    0      &  s     & -1     & \cdots & 0      & 0\\
+    \vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+    0      &  0     & 0      & 0      & s      & -1\\
+    0      &  0     & 0      & 0      & 0      & s
+  \end{pmatrix}
+  \begin{pmatrix}
+    Z_1(s)\\
+    Z_2(s)\\
+    \vdots\\
+    Z_{n-1}(s)\\
+    Z_n(s)
+  \end{pmatrix}
+  -
+  \begin{pmatrix} 0 \\ 0 \\ \vdots \\ 0 \\ 1 \end{pmatrix}
+  U(s)
+  =
+  0.
+\]
+Collect this into one algebraic system
+\[
+  \left(
+  \begin{array}{l|l}
+    \begin{array}{cccccc}
+      s      & -1     & 0      & \cdots & 0      & 0\\
+      0      &  s     & -1     & \cdots & 0      & 0\\
+      \vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+      0      &  0     & 0      & 0      & s      & -1\\
+      0      &  0     & 0      & 0      & 0      & s
+    \end{array}
+    &
+    \begin{array}{c} 0 \\ 0 \\ \vdots \\ 0 \\ -1 \end{array}
+  \end{array}
+  \right)
+  \begin{pmatrix}
+    Z_1(s)\\
+    Z_2(s)\\
+    \vdots\\
+    Z_n(s)\\
+    U(s)
+  \end{pmatrix}
+  =
+  0.
+\]
+This system of \(n\) equations in \(n+1\) unknowns has rank \(n\) for all \(s\in \mathbb{C}.\)
+This is an unusual property that not all systems have.
+Not only that, it is a property that is preserved under the linear transformation.
+Observe that for the system (1) we can compute the Laplace transform and arrive at a similar augmented system,
+\[
+  \left(
+  \begin{array}{l|l}
+    s\, I - A & -B
+  \end{array}
+  \right)
+  \begin{pmatrix}
+    X(s) \\ U(s)
+  \end{pmatrix}
+  =
+  0.
+\]
+If we perform a coordinate change \(v = P x\) the equation becomes
+\[
+  P^{-1}
+  \left(
+  \begin{array}{l|l}
+    s\, I - P A P^{-1} & -P B
+  \end{array}
+  \right)
+  \begin{pmatrix}
+    V(s) \\ U(s)
+  \end{pmatrix}
+  =
+  0,
+\]
+where we observe that \(\bar{A} = P A P^{-1}\) and \(\bar{B} = P B\) are the new matrices of the state-space model for \(v(t).\)
+As a result, we can see that the matrix's rank is left invariant by the invertible linear transformation.
+Given a transformation \(z = P x\) we have
+\[\begin{aligned}
+  0
+    &=
+      P^{-1}
+      \left(
+      \begin{array}{l|l}
+        s\, I - P A P^{-1} & -P B
+      \end{array}
+      \right)
+      \begin{pmatrix}
+        Z(s) \\ U(s)
+      \end{pmatrix}\\
+    &=
+      P^{-1}
+      \left(
+      \begin{array}{l|l}
+        \begin{array}{cccccc}
+          s      & -1     & 0      & \cdots & 0      & 0\\
+          0      &  s     & -1     & \cdots & 0      & 0\\
+          \vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+          0      &  0     & 0      & 0      & s      & -1\\
+          0      &  0     & 0      & 0      & 0      & s
+        \end{array}
+        &
+        \begin{array}{c} 0 \\ 0 \\ \vdots \\ 0 \\ -1 \end{array}
+      \end{array}
+      \right)
+      \begin{pmatrix}
+        Z_1(s)\\
+        Z_2(s)\\
+        \vdots\\
+        Z_n(s)\\
+        U(s)
+      \end{pmatrix}.
+\end{aligned}\]
+%
+This process allows us to conjecture
+%
+\begin{quote}
+  \textbf{Conjecture:}
+  There exists a linear transformation \(z = P x\) so that system (1) is equivalent to system (2) if, and only if,
+  \(
+    \operatorname{rank}\left(
+      \begin{array}{l|l}
+        s I - A & B
+      \end{array}
+    \right)
+    =
+    n
+  \)
+  for all \(s \in \mathbb{C}.\)
+\end{quote}
+This conjecture turns out to be a theorem, the Popo-Belevitch-Hautus (PBH) Test, and the rank condition is one of the many equivalent conditions for controllability.
+The PBH Test is seldom used, likely because the proof established in the literature is non-constructive;
+it doesn't tell you how to construct \(P\) and, even if it did, it would probably be more complicated than other results.
+
