@@ -1,0 +1,21 @@
+---
+title :   "Systems of Linear Partial Differential Equations: Part 2"
+author:   "Rollen S. D'Souza"
+date  :   "2021-07-28"
+---
+This is a brief post.
+Recall from Part 1 on Systems of Linear Partial Differential Equations that we wanted to find a real-analytic function \(h(x, y, \theta)\) solving
+\[
+  \frac{\partial h}{\partial \theta} = 0,
+\]
+that is constant on \(x = 2\) and zero on \((x+1)^2 + y^2 - 1 = 0.\)
+One choice would be
+\[
+  h(x, y) = \frac{(x + 1)^2 + y^2 - 1}{y^2 + 8}.
+\]
+The solution does not have a globally convergent Taylor series as the singularity at \(y = \pm i\sqrt{8}\) obstructs the radius of convergence.
+This example demonstrates that a local multi-variable power series solution cannot be extended in the hopes of solving boundary conditions globally over \(\mathbb{R}.\)
+
+To find this solution, we leverage the fact that \(x - 2 = 0\) is the level set of a real analytic function.
+There exists a real analytic function \(g(x,y)\) equivalent to \((x+1)^2 + y^2 - 1\) on \(x - 2 = 0\) but not equal on an open set containing the vertical axis \(x - 2 = 0\); that is the function \(y^2 + 8.\)
+The problem is harder when the (system of) PDE(s) has coupling in the variables that appear in the boundary conditions.
