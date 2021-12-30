@@ -10754,6 +10754,33 @@ figure {
   border-radius: 0.25rem;
 }
 
+table {
+  max-width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  border: 0.25rem solid var(--bs-primary);
+  border-radius: 0.25rem;
+  margin-left: 2rem;
+}
+
+th {
+  background-color: var(--bs-primary);
+  color: var(--bs-white);
+}
+
+tr:nth-child(even) {
+  background-color: var(--bs-white);
+  color: var(--bs-dark)
+}
+
+th, td {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+}
+
 figcaption {
   max-width: 100%;
   font-size: 0.75rem;

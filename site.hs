@@ -25,6 +25,10 @@ main = hakyll $ do
     route $ setExtension "html"
     compile laTeXPostCompiler
 
+  match "posts/*.md" $ do
+    route $ setExtension "html"
+    compile $ laTeXPostCompiler
+
   ---
   --- END Post Compilation
 
