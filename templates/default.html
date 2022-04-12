@@ -7,7 +7,11 @@
     <title>Illusion of Control - Rollen S. D'Souza - $title$</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="/css/bootstrap.css" integrity="sha256-fdCoiobD15VBRiTqYrI/wY51iIvm8Yio2mncomOj8Aw=" />
+    <link
+      rel="stylesheet"
+      href="/css/bootstrap.css"
+      integrity="sha256-iO76AbzYrp95TzyOtmXv7iUR5IlREaA1eMVOtVsfzQQ="
+    />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com"></link>
@@ -24,9 +28,16 @@
   </head>
   <body class="bg-light">
     <div class="container-sm d-flex flex-column" style="max-width: 80ch">
-      <header class="flex-grow-0">
-        <div class="logo">
-          <a href="/" style="text-decoration: none; color: unset; text-align: center;">
+      <header>
+        <div class="d-flex flex-nowrap">
+          <a
+            href="/"
+            class=""
+            style="
+              text-decoration: none;
+              color: unset;
+            "
+          >
             <h1>The Illusion of Control</h1>
             <h5>Rollen S. D'Souza</h5>
           </a>
@@ -41,35 +52,35 @@
                 <li class="nav-item mx-2">
                   <div class="d-flex align-items-center justify-content-center">
                     <img src="/images/home.svg" class="m-0" style="width: 1rem; $IconHomeStyle$" alt="Home Icon">
-                    <a $LinkHomeProperties$ style="padding-right: 0" href="/">Home</a>
+                    <a $LinkHomeProperties$ style="margin-left: 0.25em; padding-right: 0" href="/">Home</a>
                   </div>
                 </li>
 
                 <li class="nav-item mx-2">
                   <div class="d-flex align-items-center justify-content-center">
                     <img src="/images/briefcase.svg" class="m-0" style="width: 1rem; $IconPublicationsStyle$" alt="Publications Icon">
-                    <a $LinkPublicationsProperties$ style="padding-right: 0" href="/publications.html">Publications</a>
+                    <a $LinkPublicationsProperties$ style="margin-left: 0.25em; padding-right: 0" href="/publications.html">Publications</a>
                   </div>
                 </li>
 
                 <li class="nav-item mx-2">
                   <div class="d-flex align-items-center justify-content-center">
                     <img src="/images/idea.svg" class="m-0" style="width: 1rem; $IconAboutStyle$" alt="About My Work Icon">
-                    <a $LinkAboutProperties$ style="padding-right: 0"  href="/about.html">About My Work</a>
+                    <a $LinkAboutProperties$ style="margin-left: 0.25em; padding-right: 0"  href="/about.html">About My Work</a>
                   </div>
                 </li>
 
                 <li class="nav-item mx-2">
                   <div class="d-flex align-items-center justify-content-center">
                     <img src="/images/archive-1.svg" class="m-0" style="width: 1rem; $IconArchiveStyle$" alt="Archive Icon">
-                    <a $LinkArchiveProperties$ style="padding-right: 0"  href="/archive.html">Archive</a>
+                    <a $LinkArchiveProperties$ style="margin-left: 0.25em; padding-right: 0"  href="/archive.html">Archive</a>
                   </div>
                 </li>
 
                 <li class="nav-item mx-2">
                   <div class="d-flex align-items-center justify-content-center">
                     <img src="/images/paper-plane.svg" class="m-0" style="width: 1rem; $IconContactStyle$" alt="Contact Me Icon">
-                    <a $LinkContactProperties$ style="padding-right: 0" href="/contactme.html">Contact Me</a>
+                    <a $LinkContactProperties$ style="margin-left: 0.25em; padding-right: 0" href="/contactme.html">Contact Me</a>
                   </div>
                 </li>
               </ul>
@@ -77,13 +88,9 @@
           </div>
         </nav>
       </header>
-
       <main
         class="bg-white flex-grow-1"
         style="
-          border-bottom-left-radius: 0.5rem;
-          border-bottom-right-radius: 0.5rem;
-          border: 0.1rem solid var(--bs-dark);
           padding-left: 1rem;
           padding-right: 1rem;
           padding-top: 1rem;
