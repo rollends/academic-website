@@ -1,0 +1,7 @@
+# Google Bot
+User-agent: Googlebot
+Allow: /
+
+# Google Bot Images
+User-agent: Googlebot-Image
+Disallow: /
