@@ -20,7 +20,7 @@ This is a problem of task assignment --- assigning tasks to workers to ensure th
 Control theory is the formal study of driving the configuration of a real-world system to a desired configuration by leveraging current information.
 This is depicted in the diagram below for this problem.
 
-![](/images/load-balance/Control-Loop.png)
+![**Figure 1**: Standard closed-loop system.](/images/load-balance/Control-Loop.png)
 
 At the start of every $100~\mathrm{ms}$ period, the control algorithm observes the current state of the queues behind every worker and assigns all unassigned tasks.
 Then, during the $100~\mathrm{ms}$ period, every worker completes as many tasks as it can: the minimum of the number of tasks in its queue and its service rate.
@@ -49,7 +49,7 @@ suppose we need only service $x^3_0$ tasks for all time (a finite number).
 The $\max$ ensures that we do not service more tasks than are actually queued behind a worker.
 The diagram below depicts the mathematical law.
 
-![](/images/load-balance/The-Law.png)
+![**Figure 2**: A visual depiction of the task system.](/images/load-balance/The-Law.png)
 
 Let $y^i_k$ denote the number of tasked serviced by worker $i$ at time period $k$.
 It is given by the expression
@@ -94,7 +94,7 @@ We consider the graph where each node in the graph is a configuration of the sys
 Each edge corresponds to a task assignment at that given time and how transfers the current configuration to the next configuration.
 Such a graph has a structure that looks like,
 
-![](/images/load-balance/Graph.png)
+![**Figure 3**: Directed graph depiction of state transitions in task system.](/images/load-balance/Graph.png)
 
 The cost of each edge is precisely the contribution
 $$
@@ -111,13 +111,13 @@ The problem of finding the highest reward path from an initial configuration (th
 > A different approach (usually analytic) is used in the control of physical systems where the control action lay in a continuum ($\mathbb{R}$).
 
 To evaluate the performance of this method, we can simulate the mathematical system $(1)$ with different policies.
-We will call the policy constructed above the ``reward-based'' policy.
+We will call the policy constructed above the "reward-based" policy.
 I compare this reward-based policy against two other policies:
 
  - Round Robin: Cycle between workers for each task.
  - Weighted Scheme: Choose which worker gets a task based on how much work was assigned in the past. If Worker 1 works twice as fast as Worker 2, then Worker 1 is assigned twice as many tasks as Worker 2 on average.
 
-![**Figure 1**: Distribution of task completion times. Round robin algorithm performs quite poorly. The reward-based policy is indistinguishable from the open-loop policy.](/images/load-balance/Figure-1-Distribution-Constant-Service.png)
+![**Figure 4**: Distribution of task completion times. Round robin algorithm performs quite poorly. The reward-based policy is indistinguishable from the open-loop policy.](/images/load-balance/Figure-1-Distribution-Constant-Service.png)
 
 The weighted scheme replicates the implementation of [Apache's By Request load balancing module](https://httpd.apache.org/docs/2.4/mod/mod_lbmethod_byrequests.html#requests) in Apache's HTTP server `httpd`.
 It is an open-loop policy: it does not rely on the current state of the worker queues.
@@ -127,19 +127,19 @@ This tally is used to assign tasks to underassigned workers.
 Unlike in the design above, the simulation samples the number of tasks $w_k$ that need to be assigned from a Poisson distribution.
 The average arrival rate of tasks is $6$ per period.
 In this simulation, the average arrival rate is $6$ per step with service rates $\alpha_1 = 6$ and $\alpha_2 = 3.$
-Figure 1 depicts the distribution of task completion times.
+Figure 4 depicts the distribution of task completion times.
 The reward-based policy is indistinguishable from the performance of open-loop weighted scheme.
 On the other hand, round-robin policy fairs quite poorly.
 
-![**Figure 2**: At least 5% of tasks have an improved completion time with the reward-based policy than the open-loop policy when the service rate is  distributed about some known mean service rate (0--12 and 0--6 for the two workers respectively).](/images/load-balance/Figure-2-Distribution-Noisy-Service.png)
+![**Figure 5**: At least 5% of tasks have an improved completion time with the reward-based policy than the open-loop policy when the service rate is  distributed about some known mean service rate (0--12 and 0--6 for the two workers respectively).](/images/load-balance/Figure-2-Distribution-Noisy-Service.png)
 
 The real advantage in using feedback is when there is uncertainty in the service rates --- there is noise in the loop!
 Suppose the service rates $\alpha_1$ and $\alpha_2$ varied with a known average rate for each worker.
 This could be because the actual amount of time to complete a task varies.
-As Figure 2 demonstrates, the reward-based policy improves the performance of at least 5% of tasks.
+As Figure 5 demonstrates, the reward-based policy improves the performance of at least 5% of tasks.
 However, there is a more visible effect in the nature of outliers.
-Figure 3 shows that the extent of the distribution and its outliers.
+Figure 6 shows that the extent of the distribution and its outliers.
 Notice that the spread of distribution is greatly reduced with the reward-based policy.
 
-![**Figure 3**: The majority of the improvement appears in the outliers. Outlier tasks have a much longer wait time with the open-loop policy.](/images/load-balance/Figure-3-Box-Noisy-Service.png)
+![**Figure 6**: The majority of the improvement appears in the outliers. Outlier tasks have a much longer wait time with the open-loop policy.](/images/load-balance/Figure-3-Box-Noisy-Service.png)
 
