@@ -3,7 +3,7 @@
 import Hakyll
 import Data.Map.Strict (insert)
 import Data.Text (pack)
-import Text.CSL.Pandoc (processCites')
+import Text.Pandoc.Citeproc (processCitations)
 import Text.Pandoc
 --------------------------------------------------------------------------------
 
@@ -129,7 +129,7 @@ postCompiler item =
 
 loadLaTeXPostBibliography :: String -> Item Pandoc -> Compiler (IO Pandoc)
 loadLaTeXPostBibliography filepath (Item id (Pandoc meta docBody)) =
-  return $ processCites' $ Pandoc newMetadata docBody
+  return $ runIOorExplode $ processCitations $ Pandoc newMetadata docBody
   where
     newMetadata =
       Meta $
@@ -188,7 +188,6 @@ laTeXWriterOptions =
   , writerEpubSubdirectory = writerEpubSubdirectory defaultHakyllWriterOptions
   , writerEpubMetadata     = writerEpubMetadata defaultHakyllWriterOptions
   , writerEpubFonts        = writerEpubFonts defaultHakyllWriterOptions
-  , writerEpubChapterLevel = writerEpubChapterLevel defaultHakyllWriterOptions
   , writerTOCDepth         = writerTOCDepth defaultHakyllWriterOptions
   , writerReferenceDoc     = writerReferenceDoc defaultHakyllWriterOptions
   , writerReferenceLocation= writerReferenceLocation defaultHakyllWriterOptions
