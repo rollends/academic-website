@@ -44,13 +44,13 @@ It is depicted in Figure 3.
 
 Mathematically, letting $0$ denote the identity action (the "do nothing" action), the cycle is described by,
 $$
-g_1 g_1 g_1 = (g_1)^3 = 0.
+g_1 + g_1 + g_1 = 3\,g_1 = 0.
 $$
 All of the other actions in this puzzle have this property.
 Repeating an action three times will return us to the original state prior to the initial action.
 This is a convenient property that allows us to determine something critical:
-the inverse of $g_1$ --- the action $g_1^{-1}$ that reverses an application of $g_1$ --- is just the repeated action of $g_2$ twice.
-That is $g_2^{-1} = g_2^2$.
+the inverse of $g_1$ --- the action $-g_1$ that reverses an application of $g_1$ --- is just the repeated action of $g_2$ twice.
+That is $-g_2 = 2\,g_2$.
 
 Let $g_2: X \to X$ denote the second action (hitting the second block from the left):
 this action decrements the first three blocks from the left by exactly one.
@@ -71,15 +71,15 @@ $$
 \end{aligned}
 $$
 and they can be combined by adding component-wise.
-For example, $g_1\,g_2$ is,
+For example, $g_1 + g_2$ is,
 $$
-  g_1\,g_2 = (-2, -2, -1, 0).
+  g_1 + g_2 = (-2, -2, -1, 0).
 $$
 If we combine the observations that:
 
   * each action repeated three times returns the original state,
-  * the actions associate: $(g_1 g_2) g_3 = g_1 (g_2 g_3)$,
-  * the actions commute: $g_1 g_2 = g_2 g_1$,
+  * the actions associate: $(g_1 + g_2) + g_3 = g_1 + (g_2 + g_3)$,
+  * the actions commute: $g_1 + g_2 = g_2 + g_1$,
 
 then we can see that the complete set of actions is the (additive) group $\mathbb{F}_3^4$:
 the additive space of $4$-vectors of elements in the field of integers mod $3$.
@@ -113,13 +113,13 @@ That is,
 $$
 (2, 1, 1, 2)
   =
-    g_2\,g_3\,(0, 0, 0, 0)
+    (g_2 + g_3)\,(0, 0, 0, 0)
 $$
 
 Since we now know that the current state is arrived at by applying the action $g_3$ followed by action $g_2$, we merely have to invert these operations.
-Recalling the earlier discussion that $g_2^{-1} = g_2^2$ and $g_3{-1} = g_3^2$, conclude that,
+Recalling the earlier discussion that $-g_2 = 2\,g_2$ and $-g_3 = 2\,g_3$, conclude that,
 $$
-  g_3^2\,g_2^2\,(2, 1, 1, 2)
+  (2\,g_3 + 2\,g_2)\,(2, 1, 1, 2)
     =
       (0, 0, 0, 0),
 $$
