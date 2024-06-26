@@ -49,8 +49,8 @@ $$
 All of the other actions in this puzzle have this property.
 Repeating an action three times will return us to the original state prior to the initial action.
 This is a convenient property that allows us to determine something critical:
-the inverse of $g_1$ --- the action $-g_1$ that reverses an application of $g_1$ --- is just the repeated action of $g_2$ twice.
-That is $-g_2 = 2\,g_2$.
+the inverse of $g_1$ --- the action $-g_1$ that reverses an application of $g_1$ --- is just the repeated action of $g_1$ twice.
+That is $-g_1 = 2\,g_1$.
 
 Let $g_2: X \to X$ denote the second action (hitting the second block from the left):
 this action decrements the first three blocks from the left by exactly one.
