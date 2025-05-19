@@ -6,16 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Illusion of Control - Rollen S. D'Souza - $title$</title>
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
     <!-- Bootstrap -->
     <link
       rel="stylesheet"
       href="/css/bootstrap.css"
-      integrity="sha256-iO76AbzYrp95TzyOtmXv7iUR5IlREaA1eMVOtVsfzQQ="
+      integrity="sha256-cZhDidP60GTuDYEbCy00ztCGSDR2DvY+rCrMow4fcow="
     />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@700&family=IBM+Plex+Serif&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="/css/rollends.ca.css"
+      integrity="sha256-hsEsYo/agfzGikdZIBZco/IImyw4demfOiCekHyiUAE="
+    />
 
     <!-- Icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -26,14 +32,15 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
   </head>
-  <body class="bg-light">
+  <body>
     <div class="container-sm d-flex flex-column" style="max-width: 120ch">
       <header>
-        <div class="d-flex flex-nowrap">
+        <div class="d-flex flex-nowrap justify-content-center">
           <a
             href="/"
             class=""
             style="
+              text-align: center;
               text-decoration: none;
               color: unset;
             "
@@ -50,37 +57,30 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav nav-fill mb-lg-0">
                 <li class="nav-item mx-2">
-                  <div class="d-flex align-items-center justify-content-center">
+                  <div class="d-inline-flex">
                     <img src="/images/home.svg" class="m-0" style="width: 1rem; $IconHomeStyle$" alt="Home Icon">
-                    <a $LinkHomeProperties$ style="margin-left: 0.25em; padding-right: 0" href="/">Home</a>
+                    <a $LinkHomeProperties$ style="margin-left: 0.5em" href="/">Home</a>
                   </div>
                 </li>
 
                 <li class="nav-item mx-2">
-                  <div class="d-flex align-items-center justify-content-center">
+                  <div class="d-inline-flex">
                     <img src="/images/briefcase.svg" class="m-0" style="width: 1rem; $IconPublicationsStyle$" alt="Publications Icon">
-                    <a $LinkPublicationsProperties$ style="margin-left: 0.25em; padding-right: 0" href="/publications.html">Publications</a>
+                    <a $LinkPublicationsProperties$ style="margin-left: 0.5em" href="/publications.html">Publications</a>
                   </div>
                 </li>
 
                 <li class="nav-item mx-2">
-                  <div class="d-flex align-items-center justify-content-center">
-                    <img src="/images/idea.svg" class="m-0" style="width: 1rem; $IconAboutStyle$" alt="About My Work Icon">
-                    <a $LinkAboutProperties$ style="margin-left: 0.25em; padding-right: 0"  href="/about.html">About My Work</a>
-                  </div>
-                </li>
-
-                <li class="nav-item mx-2">
-                  <div class="d-flex align-items-center justify-content-center">
+                  <div class="d-inline-flex">
                     <img src="/images/archive-1.svg" class="m-0" style="width: 1rem; $IconArchiveStyle$" alt="Archive Icon">
-                    <a $LinkArchiveProperties$ style="margin-left: 0.25em; padding-right: 0"  href="/archive.html">Archive</a>
+                    <a $LinkArchiveProperties$ style="margin-left: 0.5em"  href="/archive.html">Archive</a>
                   </div>
                 </li>
 
                 <li class="nav-item mx-2">
-                  <div class="d-flex align-items-center justify-content-center">
+                  <div class="d-inline-flex">
                     <img src="/images/paper-plane.svg" class="m-0" style="width: 1rem; $IconContactStyle$" alt="Contact Me Icon">
-                    <a $LinkContactProperties$ style="margin-left: 0.25em; padding-right: 0" href="/contactme.html">Contact Me</a>
+                    <a $LinkContactProperties$ style="margin-left: 0.5em" href="/contactme.html">Contact Me</a>
                   </div>
                 </li>
               </ul>
@@ -101,19 +101,14 @@
           $body$
       </main>
 
-      <footer
-        class="flex-grow-0"
-        style="text-align: center; padding-top: 1rem"
-      >
-        <h6>
-          Site proudly generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> and styled using <a href="https://getbootstrap.com/">Bootstrap</a>.
-          Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>.
-        </h6>
+      <footer class="flex-grow-0 site-footer">
+        Site proudly generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> and styled using <a href="https://getbootstrap.com/">Bootstrap</a>.
+        Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>.
       </footer>
     </div>
 
-    <script src="/scripts/bootstrap.bundle.js" integrity="sha256-gs8oDbqgNtJmRTiBCEyHPU7IFfB20CXdFX8QN+Zioog="></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="/scripts/bootstrap.bundle.js" integrity="sha256-FDpsoZwSVa4O6J4/JNdkLmmZPtKV4fyJ/jtwbEmycRs="></script>
+    <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0&features=es6"></script>
     <!-- Configuring MathJaX to support Equation Numbering -->
     <script>
       MathJax = {
@@ -125,13 +120,13 @@
           packages: {'[+]': ['tagformat']}
         },
         svg: {
-          scale: 0.9,                    // global scaling factor for all expressions
+          scale: 1,                      // global scaling factor for all expressions
           minScale: .5,                  // smallest scaling factor to use
-          mtextInheritFont: false,       // true to make mtext elements use surrounding font
+          mtextInheritFont: true,        // true to make mtext elements use surrounding font
           merrorInheritFont: true,       // true to make merror text use surrounding font
           mathmlSpacing: false,          // true for MathML spacing rules, false for TeX rules
           skipAttributes: {},            // RFDa and other attributes NOT to copy to the output
-          exFactor: .5,                  // default size of ex in em units
+          exFactor: .8,                  // default size of ex in em units
           displayAlign: 'center',        // default for indentalign when set to 'auto'
           displayIndent: '0',            // default for indentshift when set to 'auto'
           fontCache: 'local',            // or 'global' or 'none'
