@@ -1,0 +1,13 @@
+{
+    "name": "Academic Website Dev Container",
+    "build":
+    {
+        "dockerfile": "Dockerfile"
+    },
+    "forwardPorts": [8000],
+    "customizations": {
+        "vscode": {
+            "extensions": ["haskell.haskell", "justusadam.language-haskell"]
+        }
+    }
+}
