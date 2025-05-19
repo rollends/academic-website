@@ -193,6 +193,15 @@ laTeXWriterOptions =
   , writerReferenceLocation= writerReferenceLocation defaultHakyllWriterOptions
   , writerSyntaxMap        = writerSyntaxMap defaultHakyllWriterOptions
   , writerPreferAscii      = False
+  , writerFigureCaptionPosition = CaptionBelow
+  , writerTableCaptionPosition  = CaptionBelow
+  , writerListOfFigures    = False
+  , writerListOfTables     = False
+  , writerListTables       = False
+  , writerEpubTitlePage    = False
+  , writerSplitLevel       = writerSplitLevel defaultHakyllWriterOptions
+  , writerChunkTemplate    = writerChunkTemplate defaultHakyllWriterOptions
+  , writerLinkImages       = False
   }
 
 --------------------------------------------------------------------------------
