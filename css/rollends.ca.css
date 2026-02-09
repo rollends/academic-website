@@ -8,12 +8,9 @@
 
 body {
   font-family: var(--bs-font-serif);
-  background-color: #FFFBF2; /* bright bs-yellow */
 }
 
 .navbar {
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
   font-weight: 700;
 }
 
@@ -22,10 +19,9 @@ body {
   color: var(--bs-light);
   font-family: var(--bs-font-sans-serif);
   font-weight: 400;
-  border-bottom-left-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
   text-align: center;
-  padding-top: 1rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
 }
 
 .site-footer a {
@@ -41,13 +37,6 @@ body {
   margin-right: auto;
   margin-left: auto;
   list-style: none;
-}
-
-.navbar-dark .navbar-nav .nav-link {
-  color: var(--bs-yellow);
-}
-.navbar-dark .navbar-nav .nav-item {
-  filter: sepia(70);
 }
 
 .nav-link.active {
@@ -92,10 +81,11 @@ figure {
   max-width: 80%;
   padding: 0.5rem;
   text-align: center;
-  border: 0.2rem solid var(--bs-dark);
+  background-color: color-mix(in srgb, var(--bs-indigo) 15%, var(--bs-light));
+  border-radius: 0.25rem;
   align-self: center;
-  background-color: #FFFBF2; /* bright bs-yellow */
 }
+
 
 figcaption {
   max-width: 100%;
@@ -115,9 +105,8 @@ blockquote {
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: #FFFBF2; /* bright bs-yellow */
+  background-color: var(--bs-white);
   background-clip: border-box;
-  border: 0.25rem solid var(--bs-secondary);
   border-radius: 0.25rem;
   padding: 1rem 1rem;
 }
