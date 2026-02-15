@@ -1,12 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Posts (postRules, PostMode(..)) where
+module Posts (postRules, PostMode(..), PostListBound(..), postListContext) where
 
 import Hakyll 
 import Compiler
 import Text.Read (readMaybe)
 
 data PostMode = Draft | Publish
+data PostListBound = BoundedBy Int | Unbounded
 
 postRules :: PostMode -> Rules ()
 postRules Draft =
@@ -38,6 +39,20 @@ legacyPostRules =
     matchMetadata "posts/*.tex" (not . laTeXPostHasReferences) $ do
       route $ setExtension "html"
       compile laTeXPostCompiler
+
+
+postListContext :: PostListBound -> Context b
+
+postListContext Unbounded =
+  listField "posts" postCtx posts
+  where 
+    posts = recentFirst =<< loadAll "posts/*"
+
+postListContext (BoundedBy n) =
+  listField "posts" postCtx postsBoundedByN
+  where 
+    posts = recentFirst =<< loadAll "posts/*"
+    postsBoundedByN = (return . (take n)) =<< posts
 
 
 postShouldPublish :: Metadata -> Bool
