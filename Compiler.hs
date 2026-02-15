@@ -3,6 +3,12 @@
 module Compiler (defaultCompiler, postCompiler, laTeXPostCompiler, laTeXPostHasReferences, laTeXPostWithBibCompiler, laTeXWriterOptions, postCtx) where
 
 import Hakyll
+import Crypto.Hash (hashWith)
+import Crypto.Hash.Algorithms (SHA256(..))
+import qualified Data.ByteArray as BA
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.UTF8 as BU
+import qualified Data.ByteString.Base64 as B64
 import Data.Map.Strict (insert)
 import Data.Text (pack)
 import Text.Pandoc.Citeproc (processCitations)
@@ -14,10 +20,24 @@ import Navigation
 
 defaultCompiler :: Context String -> ActivePage -> Item String -> Compiler (Item String)
 defaultCompiler ctx page item =
-  loadAndApplyTemplate ("templates/default.html") context item
-    >>= relativizeUrls
+  do
+    bootstrapIntegrityHash <- computeIntegrityHashForItem "css/bootstrap.css"
+    siteIntegrityHash <- computeIntegrityHashForItem "css/rollends.ca.css"
+    loadAndApplyTemplate ("templates/default.html") (context bootstrapIntegrityHash siteIntegrityHash) item
+      >>= relativizeUrls
   where
-    context = navBarContext page <> ctx
+    context bHash sHash = 
+      constField "BootstrapStyleIntegrityHash" bHash
+        <> constField "SiteStyleIntegrityHash" sHash
+        <> navBarContext page 
+        <> ctx
+
+--------------------------------------------------------------------------------
+computeIntegrityHashForItem :: Identifier -> Compiler String
+computeIntegrityHashForItem itemId = 
+  do
+    cssBody <- loadBody itemId
+    return $ BU.toString $ B64.encode $ BS.pack $ BA.unpack $ hashWith SHA256 (BU.fromString cssBody)
 
 --------------------------------------------------------------------------------
 

@@ -1,23 +1,14 @@
---------------------------------------------------------------------------------
---- EXTERNAL IMPORTS
----
 {-# LANGUAGE OverloadedStrings #-}
 import Hakyll
+import Data.Version as Version
 import System.Environment as Environment
----
---------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
---- LOCAL IMPORTS
 import Compiler
 import Navigation
 import Posts
----
---------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
---- ENTRY POINT FOR SITE COMPILATION
----
+import Paths_rollen_academic_site (version)
+
 main :: IO ()
 main = do
   isInDraft <- draftMode
@@ -28,45 +19,38 @@ main = do
     --- BEGIN One off Files
     ---
     match "about.tex" $ do
-      route   $ setExtension "html"
+      route $ setExtension "html"
       compile $ pandocCompilerWith defaultHakyllReaderOptions laTeXWriterOptions
         >>= defaultCompiler defaultContext AboutMyWorkPage
 
     match "contactme.md" $ do
-      route   $ setExtension "html"
+      route $ setExtension "html"
       compile $ pandocCompiler
         >>= defaultCompiler defaultContext ContactMePage
 
-    create ["archive.html"] $ do
-      route idRoute
-      compile $ do
-        posts <- recentFirst =<< loadAll "posts/*"
-        let
-          archiveCtx =
-            listField "posts" postCtx (return posts)  <>
-            constField "title" "Archive"              <>
-            defaultContext
-
-        makeItem "archive.html"
-          >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-          >>= defaultCompiler archiveCtx ArchivePage
+    create ["archive.html"] $ 
+      let
+        archiveCtx = constField "title" "Archive" <> postListContext Unbounded <> defaultContext
+      in do
+        route idRoute
+        compile $
+          makeItem "archive.html"
+            >>= loadAndApplyTemplate "templates/archive.html" (archiveCtx)
+            >>= defaultCompiler (archiveCtx) ArchivePage
 
     match "index.html" $
       let
-        fourRecentPosts = (return . (take 4)) =<< recentFirst =<< loadAll "posts/*"
-        archiveCtx      = navBarContext HomePage <>
-                          listField "posts" postCtx fourRecentPosts <>
-                          defaultContext
+        archiveCtx = postListContext (BoundedBy 4) <> defaultContext
       in do
-        route   $ setExtension "html"
+        route idRoute
         compile $
           getResourceBody
-            >>= applyAsTemplate archiveCtx
-            >>= defaultCompiler archiveCtx HomePage
+            >>= applyAsTemplate (archiveCtx)
+            >>= defaultCompiler (archiveCtx) HomePage
 
     match "publications.html" $ do
-      route   $ idRoute
-      compile $ do
+      route idRoute
+      compile $
         getResourceBody
           >>= defaultCompiler defaultContext PublicationsPage
     ---
@@ -91,9 +75,10 @@ staticRules =
       compile copyFileCompiler
 
     match "css/*" $ do
-      route   idRoute
+      route $ gsubRoute "css/" (\x -> "css/" ++ siteVersionString ++ ".")
       compile compressCssCompiler
 
+siteVersionString = "site." ++ (Version.showVersion Paths_rollen_academic_site.version)
 
 draftMode :: IO PostMode
 draftMode = do
