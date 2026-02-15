@@ -3,3 +3,5 @@ packages:
   - .
 extra-deps:
   - hakyll-4.16.6.0
+ghc-options:
+  fsnotify: -optP-UHAVE_NATIVE_WATCHER

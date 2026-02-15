@@ -1,10 +1,14 @@
 name:               rollen-academic-site
-version:            0.2.0.0
+version:            0.3.0.0
 build-type:         Simple
 cabal-version:      >= 1.10
 
 executable site
   main-is:          site.hs
+  other-modules:
+    Compiler,
+    Navigation,
+    Posts
   build-depends:    base == 4.*
                   , hakyll == 4.*
                   , pandoc == 3.*

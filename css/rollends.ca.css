@@ -25,7 +25,7 @@ body {
 }
 
 .site-footer a {
-  color: var(--bs-cyan);
+  color: var(--bs-light);
 }
 
 .navbar-nav {
@@ -43,8 +43,12 @@ body {
   text-decoration: underline;
 }
 
-h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
+h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, .h1, h1 {
   font-family: var(--bs-font-sans-serif);
+}
+
+.script {
+  font-family: "Lobster Two", var(--bs-font-sans-serif);
 }
 
 .h1, h1 {
@@ -90,7 +94,6 @@ figure {
 figcaption {
   max-width: 100%;
   text-align: justify;
-  font-family: var(--bs-font-sans-serif);
   color: var(--bs-indigo);
 }
 

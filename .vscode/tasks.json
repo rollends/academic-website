@@ -19,7 +19,21 @@
         {
             "label": "Build Website",
             "type": "shell",
+            "options": {
+                "env": {
+                    "HAKYLL_DRAFT_MODE": "True"
+                }
+            },
             "command": "stack exec site build",
+            "dependsOn": [
+                "Build Project"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean Website",
+            "type": "shell",
+            "command": "stack exec site clean",
             "dependsOn": [
                 "Build Project"
             ],
@@ -28,6 +42,14 @@
         {
             "label": "Run Watch Server",
             "type": "shell",
+            "options": {
+                "env": {
+                    "HAKYLL_DRAFT_MODE": "True"
+                }
+            },
+            "dependsOn": [
+                "Build Project"
+            ],
             "command": "stack exec site watch",
             "isBackground": true,
             "problemMatcher": [
@@ -48,6 +70,15 @@
                     }
                 }
             ]
+        },
+        {
+            "label": "Deploy Website",
+            "type": "shell",
+            "command": "stack exec site build",
+            "dependsOn": [
+                "Clean Website"
+            ],
+            "problemMatcher": []
         },
         {
             "label": "Stop Watch Server",
