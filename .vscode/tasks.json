@@ -72,11 +72,20 @@
             ]
         },
         {
-            "label": "Deploy Website",
+            "label": "Build Website (Publish)",
             "type": "shell",
             "command": "stack exec site build",
             "dependsOn": [
                 "Clean Website"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Deploy Website",
+            "type": "shell",
+            "command": "${workspaceFolder}/.vscode/deploy.sh",
+            "dependsOn": [
+                "Build Website (Publish)"
             ],
             "problemMatcher": []
         },
