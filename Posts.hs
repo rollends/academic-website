@@ -1,12 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Posts (postRules, PostMode(..), PostListBound(..), postListContext) where
+module Posts (postRules, PostMode (..), PostListBound (..), postListContext) where
 
-import Hakyll 
 import Compiler
+import Hakyll
 import Text.Read (readMaybe)
 
 data PostMode = Draft | Publish
+
 data PostListBound = BoundedBy Int | Unbounded
 
 postRules :: PostMode -> Rules ()
@@ -17,7 +18,6 @@ postRules Draft =
     match "posts/*.md" $ do
       route $ setExtension "html"
       compile laTeXPostCompiler
-
 postRules Publish =
   do
     legacyPostRules
@@ -25,7 +25,6 @@ postRules Publish =
     matchMetadata "posts/*.md" postShouldPublish $ do
       route $ setExtension "html"
       compile laTeXPostCompiler
-
 
 legacyPostRules :: Rules ()
 legacyPostRules =
@@ -40,30 +39,25 @@ legacyPostRules =
       route $ setExtension "html"
       compile laTeXPostCompiler
 
-
 postListContext :: PostListBound -> Context b
-
 postListContext Unbounded =
   listField "posts" postCtx posts
-  where 
+  where
     posts = recentFirst =<< loadAll "posts/*"
-
 postListContext (BoundedBy n) =
   listField "posts" postCtx postsBoundedByN
-  where 
+  where
     posts = recentFirst =<< loadAll "posts/*"
-    postsBoundedByN = (return . (take n)) =<< posts
-
+    postsBoundedByN = take n <$> posts
 
 postShouldPublish :: Metadata -> Bool
 postShouldPublish metadata = not $ isDraft metadata
-
 
 isDraft :: Metadata -> Bool
 isDraft metadata =
   case lookupString "draft" metadata of
     Just value ->
       case readMaybe value of
-        Just True -> True 
+        Just True -> True
         _ -> False
-    _ -> False 
+    _ -> False

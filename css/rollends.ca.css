@@ -114,6 +114,14 @@ blockquote {
   padding: 1rem 1rem;
 }
 
+main {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  text-align: justify;
+}
+
 article h1 {
   font-size: calc(1rem + 1vw);
 }

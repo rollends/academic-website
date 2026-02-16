@@ -1,9 +1,16 @@
-<article itemscope itemtype="http://schema.org/BlogPosting" class="d-flex flex-column">
+<article 
+  itemscope 
+  itemtype="http://schema.org/BlogPosting" 
+  class="d-flex flex-column flex-fill"
+  >
+
   <header>
     <h1 id="post-title" itemprop="headline">$title$</h1>
     <link itemprop="url" href="#post-title">
   </header>
+
   $body$
+
   <footer class="footer" style="text-align: right">
     $if(author)$
       <span itemprop="creator" itemscope itemtype="http://schema.org/Person">

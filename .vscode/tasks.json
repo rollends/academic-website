@@ -10,7 +10,7 @@
         {
             "label": "Build Project",
             "type": "shell",
-            "command": "stack build -j1",
+            "command": "stack build",
             "dependsOn": [
                 "Configure Haskell Environment"
             ],

@@ -1,0 +1,8 @@
+{
+  "haskell.manageHLS": "GHCup",
+  "haskell.toolchain": {
+    "ghc": "9.8.4",
+    "hls": "latest"
+  },
+  "haskell.upgradeGHCup": false
+}

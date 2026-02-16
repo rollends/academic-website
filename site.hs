@@ -1,52 +1,51 @@
 {-# LANGUAGE OverloadedStrings #-}
-import Hakyll
-import Data.Version as Version
-import System.Environment as Environment
 
 import Compiler
+import Data.Version as Version
+import Hakyll
 import Navigation
-import Posts
-
 import Paths_rollen_academic_site (version)
+import Posts
+import System.Environment as Environment
 
 main :: IO ()
 main = do
   isInDraft <- draftMode
   hakyll $ do
     postRules isInDraft
-    staticRules 
+    staticRules
 
     --- BEGIN One off Files
     ---
     match "about.tex" $ do
       route $ setExtension "html"
-      compile $ pandocCompilerWith defaultHakyllReaderOptions laTeXWriterOptions
-        >>= defaultCompiler defaultContext AboutMyWorkPage
+      compile $
+        pandocCompilerWith defaultHakyllReaderOptions laTeXWriterOptions
+          >>= defaultCompiler defaultContext AboutMyWorkPage
 
     match "contactme.md" $ do
       route $ setExtension "html"
-      compile $ pandocCompiler
-        >>= defaultCompiler defaultContext ContactMePage
+      compile $
+        pandocCompiler
+          >>= defaultCompiler defaultContext ContactMePage
 
-    create ["archive.html"] $ 
-      let
-        archiveCtx = constField "title" "Archive" <> postListContext Unbounded <> defaultContext
-      in do
-        route idRoute
-        compile $
-          makeItem "archive.html"
-            >>= loadAndApplyTemplate "templates/archive.html" (archiveCtx)
-            >>= defaultCompiler (archiveCtx) ArchivePage
+    create ["archive.html"] $
+      let archiveCtx = constField "title" "Archive" <> postListContext Unbounded <> defaultContext
+       in do
+            route idRoute
+            compile $
+              makeItem "archive.html"
+                >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
+                >>= defaultCompiler archiveCtx ArchivePage
 
     match "index.html" $
-      let
-        archiveCtx = postListContext (BoundedBy 4) <> defaultContext
-      in do
-        route idRoute
-        compile $
-          getResourceBody
-            >>= applyAsTemplate (archiveCtx)
-            >>= defaultCompiler (archiveCtx) HomePage
+      let archiveCtx = postListContext (BoundedBy 4) <> defaultContext
+       in do
+            route idRoute
+            compile $
+              getResourceBody
+                >>= applyAsTemplate archiveCtx
+                >>= defaultCompiler archiveCtx HomePage
 
     match "publications.html" $ do
       route idRoute
@@ -55,7 +54,7 @@ main = do
           >>= defaultCompiler defaultContext PublicationsPage
     ---
     --- END One off Files
-    
+
     --- Template Compilation
     match "templates/*" $ compile templateBodyCompiler
 
@@ -63,27 +62,27 @@ staticRules :: Rules ()
 staticRules =
   do
     match "images/**" $ do
-      route   idRoute
+      route idRoute
       compile copyFileCompiler
 
     match "webroot/**" $ do
-      route   $ gsubRoute "webroot/" (const "")
+      route $ gsubRoute "webroot/" (const "")
       compile $ copyFileCompiler
 
     match "scripts/*" $ do
-      route   idRoute
+      route idRoute
       compile copyFileCompiler
 
     match "css/*" $ do
       route $ gsubRoute "css/" (\x -> "css/" ++ siteVersionString ++ ".")
       compile compressCssCompiler
 
-siteVersionString = "site." ++ (Version.showVersion Paths_rollen_academic_site.version)
+siteVersionString = "site." ++ Version.showVersion Paths_rollen_academic_site.version
 
 draftMode :: IO PostMode
 draftMode = do
   env <- Environment.lookupEnv "HAKYLL_DRAFT_MODE"
-  return $ 
+  return $
     case env of
       Just _ -> Draft
       Nothing -> Publish
