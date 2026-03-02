@@ -4,3 +4,4 @@ _site/
 *.lock
 .devcontainer/deploykey.private
 *.private
+*.pdf

@@ -45,10 +45,9 @@ postListContext Unbounded =
   where
     posts = recentFirst =<< loadAll "posts/*"
 postListContext (BoundedBy n) =
-  listField "posts" postCtx postsBoundedByN
+  listField "posts" postCtx posts
   where
-    posts = recentFirst =<< loadAll "posts/*"
-    postsBoundedByN = take n <$> posts
+    posts = take n <$> (recentFirst =<< loadAll "posts/*")
 
 postShouldPublish :: Metadata -> Bool
 postShouldPublish metadata = not $ isDraft metadata

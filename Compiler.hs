@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Compiler (defaultCompiler, postCompiler, laTeXPostCompiler, laTeXPostHasReferences, laTeXPostWithBibCompiler, laTeXWriterOptions, postCtx) where
+module Compiler (defaultCompiler, postCompiler, laTeXPostCompiler, laTeXPostHasReferences, laTeXPostWithBibCompiler, laTeXWriterOptions, postCtx, integrityHashRuleset) where
 
 import Crypto.Hash (hashWith)
 import Crypto.Hash.Algorithms (SHA256 (..))
@@ -9,20 +9,21 @@ import qualified Data.ByteString as BS
 import qualified Data.ByteString.Base64 as B64
 import qualified Data.ByteString.UTF8 as BU
 import Data.Map.Strict (insert)
+import qualified Data.Set
 import Data.Text (pack)
 import Hakyll
+import Hakyll.Core.Compiler.Internal (compilerThrow)
 import Navigation
 import Text.Pandoc
 import Text.Pandoc.Citeproc (processCitations)
 
 --------------------------------------------------------------------------------
-
 defaultCompiler :: Context String -> ActivePage -> Item String -> Compiler (Item String)
 defaultCompiler ctx page item =
   do
-    bootstrapIntegrityHash <- computeIntegrityHashForItem "css/bootstrap.css"
-    siteIntegrityHash <- computeIntegrityHashForItem "css/rollends.ca.css"
-    loadAndApplyTemplate "templates/default.html" (context bootstrapIntegrityHash siteIntegrityHash) item
+    bootstrapIntegrityHash <- integrityHashSnapshotFor ("css/bootstrap.css" .&&. hasVersion "hash")
+    siteIntegrityHash <- integrityHashSnapshotFor ("css/rollends.ca.css" .&&. hasVersion "hash")
+    loadAndApplyTemplate "templates/default.html" (context (itemBody bootstrapIntegrityHash) (itemBody siteIntegrityHash)) item
       >>= relativizeUrls
   where
     context bHash sHash =
@@ -32,11 +33,33 @@ defaultCompiler ctx page item =
         <> ctx
 
 --------------------------------------------------------------------------------
-computeIntegrityHashForItem :: Identifier -> Compiler String
-computeIntegrityHashForItem itemId =
+integrityHashSnapshotFor :: Pattern -> Compiler (Item String)
+integrityHashSnapshotFor pattern =
+  _pullExactlyOneItemHash $ loadAllSnapshots pattern "integrityHash"
+
+integrityHashRuleset :: Rules ()
+integrityHashRuleset =
+  version "hash" $ compile integrityHashCompiler
+
+integrityHashCompiler :: Compiler (Item String)
+integrityHashCompiler =
+  let
+    hashString = BU.toString . B64.encode . BS.pack . BA.unpack . hashWith SHA256
+    hashCompiler = return . hashString . BU.fromString
+  in
+    do
+      body <- getResourceBody
+      item <- withItemBody hashCompiler body
+      saveSnapshot "integrityHash" item
+
+_pullExactlyOneItemHash :: Compiler [Item a] -> Compiler (Item a)
+_pullExactlyOneItemHash compilerItems =
   do
-    cssBody <- loadBody itemId
-    return $ BU.toString $ B64.encode $ BS.pack $ BA.unpack $ hashWith SHA256 (BU.fromString cssBody)
+    list <- compilerItems
+    case list of
+      [a] -> return a
+      [] -> compilerThrow ["Expected exactly one item for hashing but no items matched."]
+      _ -> compilerThrow ["Expected exactly one item for hashing but pattern matched multiple items."]
 
 --------------------------------------------------------------------------------
 
@@ -78,8 +101,7 @@ laTeXPostWithBibCompiler = do
     >>= loadLaTeXPostBibliography bibfilepath
     >>= unsafeCompiler
     >>= \document ->
-      return (writePandocWith laTeXWriterOptions (Item identifier document))
-        >>= postCompiler
+      postCompiler (writePandocWith laTeXWriterOptions (Item identifier document))
 
 laTeXPostCompiler :: Compiler (Item String)
 laTeXPostCompiler =
