@@ -7,7 +7,17 @@
     "forwardPorts": [8000],
     "customizations": {
         "vscode": {
-            "extensions": ["haskell.haskell", "justusadam.language-haskell"]
+            "extensions": [
+                "ms-python.python",
+                "ms-python.black-formatter",
+                "ms-vscode-remote.remote-containers",
+                "ms-toolsai.jupyter",
+                "haskell.haskell",
+                "justusadam.language-haskell"
+            ]
         }
-    }
+    },
+    "mounts": [
+        "source=vscode-server-cache.rollends.research-container.v1.0,target=/home/.vscode-server,type=volume"
+    ]
 }

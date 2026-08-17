@@ -1,10 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import Compiler
-import Data.Version as Version
 import Hakyll
 import Navigation
-import qualified Paths_rollen_academic_site as SitePaths
 import Posts
 import System.Environment as Environment
 
@@ -71,17 +69,12 @@ staticRules =
       route idRoute
       compile copyFileCompiler
 
-    match "css/*" $ do
-      route $ gsubRoute "css/" (\x -> "css/" ++ siteVersionString ++ ".")
-      compile compressCssCompiler
-
+    match "css/*" cssRuleset
     match "css/*" integrityHashRuleset
 
 anImageForPublishing :: Pattern
 anImageForPublishing =
   fromGlob "images/**" .&&. fromRegex ".*[.](png|svg|gif|jpg|jpeg|ico)"
-
-siteVersionString = "site." ++ Version.showVersion SitePaths.version
 
 draftMode :: IO PostMode
 draftMode = do

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Compiler (defaultCompiler, postCompiler, laTeXPostCompiler, laTeXPostHasReferences, laTeXPostWithBibCompiler, laTeXWriterOptions, postCtx, integrityHashRuleset) where
+module Compiler (defaultCompiler, postCompiler, laTeXPostCompiler, laTeXPostHasReferences, laTeXPostWithBibCompiler, laTeXWriterOptions, postCtx, cssRuleset, integrityHashRuleset) where
 
 import Crypto.Hash (hashWith)
 import Crypto.Hash.Algorithms (SHA256 (..))
@@ -11,19 +11,21 @@ import qualified Data.ByteString.UTF8 as BU
 import Data.Map.Strict (insert)
 import qualified Data.Set
 import Data.Text (pack)
+import Data.Version as Version
 import Hakyll
 import Hakyll.Core.Compiler.Internal (compilerThrow)
 import Navigation
 import Text.Pandoc
 import Text.Pandoc.Citeproc (processCitations)
+import qualified Paths_rollen_academic_site as SitePaths
 
 --------------------------------------------------------------------------------
 defaultCompiler :: Context String -> ActivePage -> Item String -> Compiler (Item String)
 defaultCompiler ctx page item =
   do
-    bootstrapIntegrityHash <- integrityHashSnapshotFor ("css/bootstrap.css" .&&. hasVersion "hash")
-    siteIntegrityHash <- integrityHashSnapshotFor ("css/rollends.ca.css" .&&. hasVersion "hash")
-    loadAndApplyTemplate "templates/default.html" (context (itemBody bootstrapIntegrityHash) (itemBody siteIntegrityHash)) item
+    bootstrapIntegrityHash <- loadBody . setVersion (Just "integrity_hash") $ fromFilePath "css/bootstrap.css"
+    siteIntegrityHash <- loadBody . setVersion (Just "integrity_hash") $ fromFilePath "css/rollends.ca.css"
+    loadAndApplyTemplate "templates/default.html" (context bootstrapIntegrityHash  siteIntegrityHash) item
       >>= relativizeUrls
   where
     context bHash sHash =
@@ -33,34 +35,37 @@ defaultCompiler ctx page item =
         <> ctx
 
 --------------------------------------------------------------------------------
-integrityHashSnapshotFor :: Pattern -> Compiler (Item String)
-integrityHashSnapshotFor pattern =
-  _pullExactlyOneItemHash $ loadAllSnapshots pattern "integrityHash"
+cssRuleset :: Rules ()
+cssRuleset =
+  do
+    route $ gsubRoute "css/" (\x -> "css/" ++ siteVersionString ++ ".")
+    compile cssCompiler
+
+siteVersionString = "site." ++ Version.showVersion SitePaths.version
+
+cssCompiler :: Compiler (Item String)
+cssCompiler =
+  do 
+    item <- compressCssCompiler
+    saveSnapshot "_final" item
 
 integrityHashRuleset :: Rules ()
 integrityHashRuleset =
-  version "hash" $ compile integrityHashCompiler
+  version "integrity_hash" $ do
+    route $ setExtension "integrity_hash"
+    compile $ do 
+      path <- getResourceFilePath 
+      compiledData <- loadBody . setVersion Nothing $ fromFilePath path
+      hashedItem <- integrityHashOf compiledData
+      saveSnapshot "_final" hashedItem
 
-integrityHashCompiler :: Compiler (Item String)
-integrityHashCompiler =
+integrityHashOf :: String -> Compiler (Item String)
+integrityHashOf body =
   let
     hashString = BU.toString . B64.encode . BS.pack . BA.unpack . hashWith SHA256
-    hashCompiler = return . hashString . BU.fromString
+    hashCompiler = makeItem . hashString . BU.fromString
   in
-    do
-      body <- getResourceBody
-      item <- withItemBody hashCompiler body
-      saveSnapshot "integrityHash" item
-
-_pullExactlyOneItemHash :: Compiler [Item a] -> Compiler (Item a)
-_pullExactlyOneItemHash compilerItems =
-  do
-    list <- compilerItems
-    case list of
-      [a] -> return a
-      [] -> compilerThrow ["Expected exactly one item for hashing but no items matched."]
-      _ -> compilerThrow ["Expected exactly one item for hashing but pattern matched multiple items."]
-
+    hashCompiler body
 --------------------------------------------------------------------------------
 
 postCtx :: Context String
