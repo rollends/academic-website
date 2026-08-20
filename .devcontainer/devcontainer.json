@@ -1,10 +1,17 @@
 {
     "name": "Academic Website Dev Container",
-    "build":
-    {
-        "dockerfile": "Dockerfile"
-    },
+    "image": "rollends.research-container:v2.2",
     "forwardPorts": [8000],
+    "mounts": [
+        "source=vscode-server-cache.rollends.research-container.v2.2,target=/home/.vscode-server,type=volume",
+        "source=${localEnv:HOME}/.ssh/,target=/home/ubuntu/.ssh/,type=bind,readonly",
+        "source=${localEnv:HOME}/.gnupg/,target=/home/ubuntu/.gnupg/,type=bind"
+    ],
+    "containerUser": "ubuntu",
+    "remoteUser": "ubuntu",
+    "updateRemoteUserUID": true,
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/workspace/academic-website,type=bind",
+    "workspaceFolder": "/home/ubuntu/workspace/academic-website",
     "customizations": {
         "vscode": {
             "extensions": [
