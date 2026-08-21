@@ -23,8 +23,5 @@
                 "justusadam.language-haskell"
             ]
         }
-    },
-    "mounts": [
-        "source=vscode-server-cache.rollends.research-container.v1.0,target=/home/.vscode-server,type=volume"
-    ]
+    }
 }
