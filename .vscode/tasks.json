@@ -83,7 +83,8 @@
         {
             "label": "Deploy Website",
             "type": "shell",
-            "command": "${workspaceFolder}/.vscode/deploy.sh",
+            "command": "bash",
+            "args": ["${workspaceFolder}/.vscode/deploy.sh"],
             "dependsOn": [
                 "Build Website (Publish)"
             ],
